@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+out/
+.build/
+dist/
+
+# IDE
+.vscode-test/
+*.vsix
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit
+.env
+.env.*
+*.pem
+**/secrets.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build artifacts
+*.exe
+*.dmg
+*.AppImage
