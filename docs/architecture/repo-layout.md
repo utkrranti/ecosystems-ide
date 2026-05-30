@@ -142,8 +142,8 @@ Key fields to patch from Code-OSS defaults:
   "dataFolderName": ".ecosystems-ide",
   "win32MutexName": "ecosystemside",
   "licenseName": "MIT",
-  "licenseUrl": "https://github.com/ecosystems/ide/blob/main/LICENSE.txt",
-  "reportIssueUrl": "https://github.com/ecosystems/ide/issues"
+  "licenseUrl": "https://github.com/utkrranti/ecosystems-ide/blob/main/LICENSE.txt",
+  "reportIssueUrl": "https://github.com/utkrranti/ecosystems-ide/issues"
 }
 ```
 

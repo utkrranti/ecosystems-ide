@@ -26,7 +26,7 @@ cd ecosystems-ide
 
 # 2. Re-point origin to EcoSystems repo (after creating empty GitHub repo)
 git remote rename origin vscode-upstream
-git remote add origin https://github.com/ecosystems/ide.git
+git remote add origin https://github.com/utkrranti/ecosystems-ide.git
 
 # 3. Apply branding
 ./scripts/brand.ps1   # patches product.json, icons, LICENSE banner
@@ -53,7 +53,7 @@ yarn watch   # first compile ~15-25 min
 ## 2. Remotes Layout
 
 ```
-origin          → github.com/ecosystems/ide (your repo)
+origin          → github.com/utkrranti/ecosystems-ide (your repo)
 vscode-upstream → github.com/microsoft/vscode (read-only)
 ```
 

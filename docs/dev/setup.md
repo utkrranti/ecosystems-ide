@@ -56,7 +56,7 @@ For **keytar** (API key storage): GNOME Keyring or KWallet must be running.
 ## 2. Clone Repository
 
 ```powershell
-git clone https://github.com/ecosystems/ide.git
+git clone https://github.com/utkrranti/ecosystems-ide.git
 cd ide
 git checkout develop
 ```

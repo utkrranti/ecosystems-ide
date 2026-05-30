@@ -95,7 +95,7 @@ Without written permission, do **not** use in product name, domain, or logo:
 |------|----------------|
 | Register "EcoSystems IDE" | TBD — legal counsel |
 | Domain | TBD (e.g. `ecosystems.dev`) |
-| GitHub org | `github.com/ecosystems/ide` |
+| GitHub repo | `github.com/utkrranti/ecosystems-ide` |
 
 Until registered, use ™ in marketing optionally: EcoSystems IDE™.
 

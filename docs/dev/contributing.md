@@ -10,7 +10,7 @@ Git workflow, branches, and PR rules for EcoSystems IDE.
 
 | Remote | URL | Purpose |
 |--------|-----|---------|
-| `origin` | `github.com/ecosystems/ide` | EcoSystems fork (push) |
+| `origin` | `github.com/utkrranti/ecosystems-ide` | EcoSystems fork (push) |
 | `vscode-upstream` | `github.com/microsoft/vscode` | Upstream (fetch only) |
 
 ---
@@ -121,7 +121,7 @@ Release PR: `develop` → `main` with release notes.
 ## 8. Fork Setup (Maintainers)
 
 ```powershell
-git clone git@github.com:ecosystems/ide.git
+git clone git@github.com:utkrranti/ecosystems-ide.git
 cd ide
 git remote add vscode-upstream https://github.com/microsoft/vscode.git
 git fetch vscode-upstream --tags
