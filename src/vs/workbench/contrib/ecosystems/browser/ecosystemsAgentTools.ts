@@ -217,10 +217,9 @@ export class EcosystemsAgentTools {
 			|| /\bpip\s+install\b/i.test(command)
 			|| /\bcargo\s+(build|install|run)\b/i.test(command);
 		const rawTimeout = Number(args.timeoutMs);
-		// Background dev servers (vite/next/etc.) can take well over 30s on a cold
-		// node_modules. Give them a generous default and combine with an idle
-		// detector below so we don't wait the full window when output stops.
-		const defaultMs = isBackground ? 180_000 : (isHeavy ? 240_000 : 60_000);
+		// Background dev servers (vite/next/etc.) can take several minutes on a
+		// cold workspace. Keep watching by default for up to 10 minutes.
+		const defaultMs = isBackground ? 600_000 : (isHeavy ? 240_000 : 60_000);
 		const timeoutMs = Math.min(600_000, Math.max(2_000,
 			Number.isFinite(rawTimeout) && rawTimeout > 0 ? Math.floor(rawTimeout) : defaultMs
 		));
@@ -282,14 +281,6 @@ export class EcosystemsAgentTools {
 			.replace(/\x1B[PX^_][^\x1B]*\x1B\\/g, ''); // DCS/PM/APC/SOS
 
 		const readyRe = /(ready in \d|ready\b|listening on|listening at|listening:|compiled successfully|compiled in |webpack compiled|local:\s*https?:\/\/|on your network:|started server on|server running|server started|dev server running|app running at|http:\/\/localhost|http:\/\/127\.0\.0\.1|→\s*Local:|VITE v|Next\.js)/i;
-		// If a background process emits *some* output and then goes quiet, treat
-		// the silence as "ready". Many dev servers do this after the banner.
-		const IDLE_READY_MS = 8_000;
-		let idleTimer: ReturnType<typeof setTimeout> | undefined;
-		const armIdleTimer = (onIdle: () => void) => {
-			if (idleTimer) { clearTimeout(idleTimer); }
-			idleTimer = setTimeout(onIdle, IDLE_READY_MS);
-		};
 
 		// Build the actual command line with a sentinel marker so we can detect completion
 		// of a single command inside a long-lived shell (where onExit only fires when the
@@ -329,12 +320,6 @@ export class EcosystemsAgentTools {
 						}
 					}
 				}
-				// Background "idle ready" detector: if the process emits any output
-				// and then stops for IDLE_READY_MS, treat as ready. This catches
-				// servers whose banner doesn't match readyRe.
-				if (isBackground) {
-					armIdleTimer(() => finish({ reason: 'ready' }));
-				}
 			}));
 
 			// Line-level detection for sentinel and readiness markers.
@@ -369,7 +354,7 @@ export class EcosystemsAgentTools {
 			}
 
 			const timer = setTimeout(() => finish({ reason: 'timeout' }), timeoutMs);
-			store.add({ dispose: () => { clearTimeout(timer); if (idleTimer) { clearTimeout(idleTimer); } } });
+			store.add({ dispose: () => clearTimeout(timer) });
 
 			instance.sendText(wrapped, true);
 		});
