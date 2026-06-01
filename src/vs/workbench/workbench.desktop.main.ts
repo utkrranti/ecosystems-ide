@@ -121,6 +121,9 @@ import './contrib/issue/electron-sandbox/issue.contribution.js';
 // Process
 import './contrib/issue/electron-sandbox/process.contribution.js';
 
+// EcoSystems AI (desktop env key seeder)
+import './contrib/ecosystems/electron-sandbox/ecosystemsEnvKeys.contribution.js';
+
 // Remote
 import './contrib/remote/electron-sandbox/remote.contribution.js';
 

@@ -8,9 +8,7 @@ pushd %~dp0..
 :: Get electron, compile, built-in extensions
 if "%VSCODE_SKIP_PRELAUNCH%"=="" node build/lib/preLaunch.js
 
-for /f "tokens=2 delims=:," %%a in ('findstr /R /C:"\"nameShort\":.*" product.json') do set NAMESHORT=%%~a
-set NAMESHORT=%NAMESHORT: "=%
-set NAMESHORT=%NAMESHORT:"=%.exe
+for /f "delims=" %%a in ('node -p "require('./product.json').nameShort + '.exe'"') do set NAMESHORT=%%a
 set CODE=".build\electron\%NAMESHORT%"
 
 :: Manage built-in extensions

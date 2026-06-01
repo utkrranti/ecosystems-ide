@@ -5,9 +5,7 @@ set ELECTRON_RUN_AS_NODE=1
 
 pushd %~dp0\..
 
-for /f "tokens=2 delims=:," %%a in ('findstr /R /C:"\"nameShort\":.*" product.json') do set NAMESHORT=%%~a
-set NAMESHORT=%NAMESHORT: "=%
-set NAMESHORT=%NAMESHORT:"=%.exe
+for /f "delims=" %%a in ('node -p "require('./product.json').nameShort + '.exe'"') do set NAMESHORT=%%a
 set CODE=".build\electron\%NAMESHORT%"
 
 %CODE% %*

@@ -19,5 +19,7 @@ $product.urlProtocol = "ecosystems-ide"
 $product.licenseUrl = "https://github.com/utkrranti/ecosystems-ide/blob/main/LICENSE.txt"
 $product.reportIssueUrl = "https://github.com/utkrranti/ecosystems-ide/issues/new"
 
-$product | ConvertTo-Json -Depth 20 | Set-Content $productPath -Encoding UTF8
+$json = $product | ConvertTo-Json -Depth 20
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($productPath, $json, $utf8NoBom)
 Write-Host "Branding applied to product.json"

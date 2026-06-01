@@ -39,13 +39,14 @@ Actionable work items for **EcoSystems IDE Phase 0** (Foundation).
 | ID | Story | Tasks | Est. | Done |
 |----|-------|-------|------|------|
 | E2-01 | Service registration | DI: `IAiService`, `IModelRouterService`, `ISecretsService` | 1d | ☐ |
-| E2-02 | Keychain service | keytar wrap; set/get/delete; unit tests | 1d | ☐ |
-| E2-03 | Settings schema | Register `ecosystems.ai.*` keys | 0.5d | ☐ |
-| E2-04 | OpenAI provider | Stream chat + completion; retry logic | 2d | ☐ |
+| E2-02 | Session keychain | Store EcoSystems session/refresh token; sign-in/out | 1d | ☐ |
+| E2-03 | Settings schema | Register `ecosystems.ai.*` (gateway, models; no BYOK) | 0.5d | ☐ |
+| E2-04 | Gateway provider | Stream chat + inline to EcoSystems AI Gateway | 2d | ☐ |
 | E2-05 | Model router | Route by feature; kill switch; connection test | 1d | ☐ |
 | E2-06 | Context builder (Phase 0) | Cursor region + file attach + templates | 1.5d | ☐ |
+| E2-07 | Gateway service (dev) | Local `localhost:8080` API + mock/plan tiers | 2d | ☐ |
 
-**E2 exit:** Dev command sends test prompt to OpenAI from main process.
+**E2 exit:** Signed-in dev can send test prompt through gateway (upstream keys server-side only).
 
 ---
 
@@ -57,7 +58,7 @@ Actionable work items for **EcoSystems IDE Phase 0** (Foundation).
 | E3-02 | Chat webview shell | HTML/CSS/TS; message list; input box | 1.5d | ☐ |
 | E3-03 | postMessage protocol | send, stream chunks, cancel, error | 1d | ☐ |
 | E3-04 | `@currentFile` attach | Selection priority; truncation; warning banner | 1d | ☐ |
-| E3-05 | Settings UI for AI | API key, model, test connection, enable toggle | 1.5d | ☐ |
+| E3-05 | Settings UI for AI | Sign-in, model picker, test connection, enable toggle | 1.5d | ☐ |
 
 **E3 exit:** User chats about open file with streaming response.
 

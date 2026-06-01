@@ -403,6 +403,7 @@ import './contrib/inlineCompletions/browser/inlineCompletions.contribution.js';
 import './contrib/dropOrPasteInto/browser/dropOrPasteInto.contribution.js';
 
 // EcoSystems AI
+import '../platform/ecosystems/common/ecosystemsPlatform.contribution.js';
 import './contrib/ecosystems/browser/ecosystems.contribution.js';
 
 import { AllowedExtensionsService } from '../platform/extensionManagement/common/allowedExtensionsService.js';

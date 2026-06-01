@@ -3,7 +3,8 @@
 EcoSystems IDE configuration keys for AI and platform features.
 
 **Namespace prefix:** `ecosystems.*` (avoids collision with VS Code defaults)  
-**Last updated:** 2026-05-30
+**Last updated:** 2026-05-31  
+**Auth:** Inbuilt via EcoSystems Gateway ([ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway)) — no user LLM API keys
 
 ---
 
@@ -15,7 +16,7 @@ EcoSystems IDE configuration keys for AI and platform features.
 | User | `%APPDATA%/ecosystems-ide/User/settings.json` | Medium |
 | Workspace | `.vscode/settings.json` or `.ecosystems/settings.json` | Highest |
 
-Phase 0: user settings only for AI keys/models.
+Phase 0: user settings for AI models and gateway URL; **session token** in keychain (not provider API keys).
 
 ---
 
@@ -24,10 +25,10 @@ Phase 0: user settings only for AI keys/models.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `ecosystems.ai.enabled` | boolean | `true` | Master switch for all AI features |
-| `ecosystems.ai.provider` | enum | `"openai"` | `openai` \| `custom` \| `none` |
-| `ecosystems.ai.provider.baseUrl` | string | `""` | Custom OpenAI-compatible endpoint |
-| `ecosystems.ai.openai.keyConfigured` | boolean | `false` | Read-only; set by keychain service |
-| `ecosystems.ai.chat.model` | string | `"gpt-4o-mini"` | Chat model ID |
+| `ecosystems.ai.provider` | enum | `"ecosystems"` | `ecosystems` \| `none` |
+| `ecosystems.ai.gateway.baseUrl` | string | `https://api.ecosystems.dev/v1` | Gateway URL (override for local dev) |
+| `ecosystems.ai.session.configured` | boolean | `false` | Read-only; true when signed in |
+| `ecosystems.ai.chat.model` | string | `"gpt-4o-mini"` | Chat model ID (from gateway catalog) |
 | `ecosystems.ai.inline.model` | string | `"gpt-4o-mini"` | Inline completion model |
 | `ecosystems.ai.inline.enabled` | boolean | `true` | Toggle ghost text |
 | `ecosystems.ai.inline.debounceMs` | number | `300` | Delay before request |
@@ -41,11 +42,10 @@ Phase 0: user settings only for AI keys/models.
 
 ```json
 {
-  "enum": ["openai", "custom", "none"],
+  "enum": ["ecosystems", "none"],
   "enumDescriptions": [
-    "OpenAI or OpenAI-compatible API",
-    "Custom base URL with API key",
-    "Disable cloud providers"
+    "EcoSystems AI Gateway (inbuilt; sign in required)",
+    "Disable cloud AI"
   ]
 }
 ```
@@ -56,8 +56,10 @@ Phase 0: user settings only for AI keys/models.
 
 | Secret | Keychain account |
 |--------|------------------|
-| OpenAI API key | `ai.provider.openai.apiKey` |
-| Custom provider key | `ai.provider.custom.apiKey` |
+| EcoSystems session token | `ai.ecosystems.sessionToken` |
+| Refresh token (if used) | `ai.ecosystems.refreshToken` |
+
+**Not stored:** OpenAI/Anthropic `sk-...` keys (gateway holds upstream keys server-side).
 
 See [secrets-and-keychain.md](../security/secrets-and-keychain.md).
 
