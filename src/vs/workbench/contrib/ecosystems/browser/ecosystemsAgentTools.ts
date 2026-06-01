@@ -219,7 +219,7 @@ export class EcosystemsAgentTools {
 		const rawTimeout = Number(args.timeoutMs);
 		// Background dev servers (vite/next/etc.) can take several minutes on a
 		// cold workspace. Keep watching by default for up to 10 minutes.
-		const defaultMs = isBackground ? 600_000 : (isHeavy ? 240_000 : 60_000);
+		const defaultMs = isBackground ? 600_000 : (isHeavy ? 600_000 : 60_000);
 		const timeoutMs = Math.min(600_000, Math.max(2_000,
 			Number.isFinite(rawTimeout) && rawTimeout > 0 ? Math.floor(rawTimeout) : defaultMs
 		));
@@ -296,6 +296,8 @@ export class EcosystemsAgentTools {
 
 		const result = await new Promise<{ exitCode?: number; reason: 'exit' | 'ready' | 'timeout' | 'error' | 'cancelled' }>((resolve) => {
 			let settled = false;
+			let detectBuf = '';
+			const DETECT_MAX = 8 * 1024;
 			const finish = (r: { exitCode?: number; reason: 'exit' | 'ready' | 'timeout' | 'error' | 'cancelled' }) => {
 				if (settled) { return; }
 				settled = true;
@@ -306,6 +308,24 @@ export class EcosystemsAgentTools {
 			store.add(instance.onData((data) => {
 				const clean = stripAnsi(data);
 				if (!clean) { return; }
+
+				// Detect command completion/readiness directly from raw chunks. Relying
+				// only on onLineData can stall when line parsing is delayed.
+				detectBuf += clean;
+				if (detectBuf.length > DETECT_MAX) {
+					detectBuf = detectBuf.slice(-DETECT_MAX);
+				}
+				if (!isBackground) {
+					const m = sentinelRe.exec(detectBuf);
+					if (m) {
+						finish({ exitCode: Number(m[1]) || 0, reason: 'exit' });
+						return;
+					}
+				} else if (readyRe.test(detectBuf)) {
+					finish({ reason: 'ready' });
+					return;
+				}
+
 				collected += clean.length;
 				chunks.push(clean);
 				if (collected > MAX_BYTES * 2) {
@@ -322,7 +342,7 @@ export class EcosystemsAgentTools {
 				}
 			}));
 
-			// Line-level detection for sentinel and readiness markers.
+			// Line-level detection retained as a secondary fallback.
 			store.add(instance.onLineData((rawLine) => {
 				const line = stripAnsi(rawLine);
 				if (!isBackground) {
