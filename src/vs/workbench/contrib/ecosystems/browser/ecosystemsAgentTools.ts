@@ -267,7 +267,10 @@ export class EcosystemsAgentTools {
 		// shell itself dies). For background processes we don't append a sentinel — they
 		// never finish, and we detect readiness via stdout markers instead.
 		const sentinel = `__ECOAGENT_${Math.random().toString(36).slice(2, 10).toUpperCase()}__`;
-		const sentinelRe = new RegExp(`${sentinel}_EXIT_(-?\\d+)`);
+		// Accept an optional missing digit so we still resolve even if the shell
+		// produced an empty exit-code expansion (defensive — the wrapper should
+		// always supply one).
+		const sentinelRe = new RegExp(`${sentinel}_EXIT_(-?\\d*)`);
 		const shell = instance.shellType;
 		const wrapped = isBackground ? command : buildWrappedCommand(command, sentinel, shell);
 
@@ -405,6 +408,11 @@ export class EcosystemsAgentTools {
 /** Wrap a command so we can detect exit code via a unique sentinel line in captured output. */
 function buildWrappedCommand(command: string, sentinel: string, shell: TerminalShellType | undefined): string {
 	const marker = `${sentinel}_EXIT_`;
+	// PowerShell quirk: $LASTEXITCODE is only set by *external* programs. For cmdlets
+	// (echo, Test-Path, Write-Host, etc.) it stays $null, which would produce a
+	// digit-less sentinel line that our regex can't match. Fall back to $? in that
+	// case so every command emits a real exit code.
+	const pwshSnippet = `${command}; $__eco = if ($LASTEXITCODE -ne $null) { $LASTEXITCODE } elseif ($?) { 0 } else { 1 }; Write-Host "${marker}$__eco"`;
 	switch (shell) {
 		case WindowsShellType.CommandPrompt:
 			return `${command} & echo ${marker}%ERRORLEVEL%`;
@@ -414,13 +422,13 @@ function buildWrappedCommand(command: string, sentinel: string, shell: TerminalS
 		case PosixShellType.Ksh:
 		case WindowsShellType.GitBash:
 		case WindowsShellType.Wsl:
-			return `${command}; echo "${marker}$?"`;
+			return `${command}; ec=$?; echo "${marker}$ec"`;
 		case GeneralShellType.PowerShell:
-			return `${command}; Write-Host "${marker}$LASTEXITCODE"`;
+			return pwshSnippet;
 		default:
 			if (isWindows) {
-				return `${command}; Write-Host "${marker}$LASTEXITCODE"`;
+				return pwshSnippet;
 			}
-			return `${command}; echo "${marker}$?"`;
+			return `${command}; ec=$?; echo "${marker}$ec"`;
 	}
 }
