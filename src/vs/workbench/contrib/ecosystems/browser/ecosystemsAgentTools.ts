@@ -96,6 +96,9 @@ export class EcosystemsAgentTools {
 	 * process doesn't block subsequent foreground commands.
 	 */
 	private foregroundTerminal: import('../../terminal/browser/terminal.js').ITerminalInstance | undefined;
+	/** Background terminals keyed by the original command string so re-running
+	 *  `npm run dev` reuses the same terminal instead of spawning a new one. */
+	private readonly backgroundTerminals = new Map<string, import('../../terminal/browser/terminal.js').ITerminalInstance>();
 
 	constructor(
 		@IFileService private readonly fileService: IFileService,
@@ -214,7 +217,10 @@ export class EcosystemsAgentTools {
 			|| /\bpip\s+install\b/i.test(command)
 			|| /\bcargo\s+(build|install|run)\b/i.test(command);
 		const rawTimeout = Number(args.timeoutMs);
-		const defaultMs = isBackground ? 30_000 : (isHeavy ? 240_000 : 60_000);
+		// Background dev servers (vite/next/etc.) can take well over 30s on a cold
+		// node_modules. Give them a generous default and combine with an idle
+		// detector below so we don't wait the full window when output stops.
+		const defaultMs = isBackground ? 180_000 : (isHeavy ? 240_000 : 60_000);
 		const timeoutMs = Math.min(600_000, Math.max(2_000,
 			Number.isFinite(rawTimeout) && rawTimeout > 0 ? Math.floor(rawTimeout) : defaultMs
 		));
@@ -222,13 +228,28 @@ export class EcosystemsAgentTools {
 		const folders = this.workspaceService.getWorkspace().folders;
 		const cwd = folders.length > 0 ? folders[0].uri : undefined;
 
-		// Reuse a single terminal for foreground commands so the agent doesn't spawn
-		// a fresh window per call. Background commands always get a dedicated terminal.
+		// Reuse terminals aggressively to avoid spawning a new tab per call:
+		//  • Foreground: one shared "EcoSystems Agent" terminal.
+		//  • Background: keyed by the command string so re-running `npm run dev`
+		//    lands in the SAME terminal as last time (the previous instance is
+		//    cancelled with Ctrl+C first).
 		let instance: import('../../terminal/browser/terminal.js').ITerminalInstance;
 		if (isBackground) {
-			instance = await this.terminalService.createTerminal({
-				config: { name: `EcoSystems Agent · ${command.slice(0, 40)}`, cwd },
-			});
+			const key = command;
+			const existing = this.backgroundTerminals.get(key);
+			if (existing && !existing.isDisposed) {
+				instance = existing;
+				// Send Ctrl+C to stop whatever is currently running in that tab so
+				// our new invocation gets a clean prompt.
+				try { instance.sendText('\x03', false); } catch { /* ignore */ }
+				// Tiny pause so the prompt redraws before we send the new command.
+				await new Promise(r => setTimeout(r, 200));
+			} else {
+				instance = await this.terminalService.createTerminal({
+					config: { name: `EcoSystems Agent · ${command.slice(0, 40)}`, cwd },
+				});
+				this.backgroundTerminals.set(key, instance);
+			}
 		} else if (this.foregroundTerminal && !this.foregroundTerminal.isDisposed) {
 			instance = this.foregroundTerminal;
 		} else {
@@ -260,7 +281,15 @@ export class EcosystemsAgentTools {
 			.replace(/\x1B\][^\x07\x1B]*(\x07|\x1B\\)/g, '') // OSC
 			.replace(/\x1B[PX^_][^\x1B]*\x1B\\/g, ''); // DCS/PM/APC/SOS
 
-		const readyRe = /(ready|listening|compiled|local:\s*https?:\/\/|started server on|server running|http:\/\/localhost|http:\/\/127\.0\.0\.1)/i;
+		const readyRe = /(ready in \d|ready\b|listening on|listening at|listening:|compiled successfully|compiled in |webpack compiled|local:\s*https?:\/\/|on your network:|started server on|server running|server started|dev server running|app running at|http:\/\/localhost|http:\/\/127\.0\.0\.1|→\s*Local:|VITE v|Next\.js)/i;
+		// If a background process emits *some* output and then goes quiet, treat
+		// the silence as "ready". Many dev servers do this after the banner.
+		const IDLE_READY_MS = 8_000;
+		let idleTimer: ReturnType<typeof setTimeout> | undefined;
+		const armIdleTimer = (onIdle: () => void) => {
+			if (idleTimer) { clearTimeout(idleTimer); }
+			idleTimer = setTimeout(onIdle, IDLE_READY_MS);
+		};
 
 		// Build the actual command line with a sentinel marker so we can detect completion
 		// of a single command inside a long-lived shell (where onExit only fires when the
@@ -300,6 +329,12 @@ export class EcosystemsAgentTools {
 						}
 					}
 				}
+				// Background "idle ready" detector: if the process emits any output
+				// and then stops for IDLE_READY_MS, treat as ready. This catches
+				// servers whose banner doesn't match readyRe.
+				if (isBackground) {
+					armIdleTimer(() => finish({ reason: 'ready' }));
+				}
 			}));
 
 			// Line-level detection for sentinel and readiness markers.
@@ -334,7 +369,7 @@ export class EcosystemsAgentTools {
 			}
 
 			const timer = setTimeout(() => finish({ reason: 'timeout' }), timeoutMs);
-			store.add({ dispose: () => clearTimeout(timer) });
+			store.add({ dispose: () => { clearTimeout(timer); if (idleTimer) { clearTimeout(idleTimer); } } });
 
 			instance.sendText(wrapped, true);
 		});
