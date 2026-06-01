@@ -41,10 +41,11 @@ interface AttachedFile {
 type ChatMode = 'ask' | 'agent';
 
 const DEFAULT_MODELS: GatewayModelInfo[] = [
-	{ id: 'claude-opus-4.7', displayName: 'Claude Opus 4.7', tier: 'pro', features: ['chat', 'agent'] },
-	{ id: 'claude-sonnet-4', displayName: 'Claude Sonnet 4', tier: 'pro', features: ['chat', 'agent'] },
+	{ id: 'gpt-4o-mini', displayName: 'GPT-4o mini', tier: 'free', features: ['chat', 'agent'] },
 	{ id: 'gpt-4o', displayName: 'GPT-4o', tier: 'pro', features: ['chat', 'agent'] },
-	{ id: 'gpt-4o-mini', displayName: 'GPT-4o mini', tier: 'free', features: ['chat'] },
+	{ id: 'claude-opus-4-8', displayName: 'Claude Opus 4.8', tier: 'pro', features: ['chat', 'agent'] },
+	{ id: 'claude-sonnet-4-6', displayName: 'Claude Sonnet 4.6', tier: 'pro', features: ['chat', 'agent'] },
+	{ id: 'claude-haiku-4-5-20251001', displayName: 'Claude Haiku 4.5', tier: 'free', features: ['chat', 'agent'] },
 ];
 
 export class EcoSystemsChatViewPane extends ViewPane {
@@ -791,6 +792,11 @@ export class EcoSystemsChatViewPane extends ViewPane {
 		if (!this.sendButton || this.isStreaming) {
 			return;
 		}
+
+		// Make sure the selected model id is one the gateway actually knows
+		// about — otherwise a stale default (or previously-picked model that
+		// no longer exists) will produce a 404 from the provider.
+		await this.loadModels();
 
 		// Snapshot attachments at send time so subsequent edits don't mutate
 		// what's already been sent. Clear the chips so the user starts fresh.
