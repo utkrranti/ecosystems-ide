@@ -238,6 +238,12 @@ export class EcosystemsAgentTools {
 			this.foregroundTerminal = instance;
 		}
 		await this.terminalService.setActiveInstance(instance);
+		// IMPORTANT: onData / onLineData only fire while an xterm front-end is attached
+		// (see TerminalInstance._writeProcessData — `this.xterm?.raw.write(...)`).
+		// If the terminal panel is hidden, xterm is detached and our capture sees
+		// nothing, so the sentinel never arrives and every command times out with
+		// "(no output captured)". Reveal the panel before sending input.
+		try { await this.terminalService.revealActiveTerminal(true); } catch { /* ignore */ }
 		// Wait for the shell to actually be ready before sending input — otherwise the
 		// first keystrokes can be swallowed by the still-initialising PTY.
 		try { await Promise.race([instance.processReady, new Promise(r => setTimeout(r, 5000))]); } catch { /* ignore */ }
