@@ -237,7 +237,7 @@ function createGitIndexVinyls(paths) {
 				}
 
 				cp.exec(
-					process.platform === 'win32' ? `git show :${relativePath}` : `git show ':${relativePath}'`,
+					process.platform === 'win32' ? `git show ":${relativePath}"` : `git show ':${relativePath}'`,
 					{ maxBuffer: stat.size, encoding: 'buffer' },
 					(err, out) => {
 						if (err) {

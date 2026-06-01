@@ -243,16 +243,16 @@ export class EcosystemsAgentTools {
 		try { await Promise.race([instance.processReady, new Promise(r => setTimeout(r, 5000))]); } catch { /* ignore */ }
 
 		const store = new DisposableStore();
-		const lines: string[] = [];
-		const MAX_BYTES = 16 * 1024;
+		// Capture raw chunks via onData so we collect output from commands that paint
+		// progress with ANSI cursor moves and CR (no newline) — e.g. `npm install`.
+		// onLineData alone would never fire for those until they finish.
+		const chunks: string[] = [];
+		const MAX_BYTES = 32 * 1024;
 		let collected = 0;
-		const stripAnsi = (s: string) => s.replace(/\x1B\[[0-9;?]*[A-Za-z]/g, '').replace(/\x1B\][^\x07]*\x07/g, '');
-		const append = (chunk: string) => {
-			const clean = stripAnsi(chunk).replace(/\r/g, '');
-			if (!clean) { return; }
-			collected += clean.length;
-			lines.push(clean);
-		};
+		const stripAnsi = (s: string) => s
+			.replace(/\x1B\[[0-9;?]*[A-Za-z]/g, '')   // CSI
+			.replace(/\x1B\][^\x07\x1B]*(\x07|\x1B\\)/g, '') // OSC
+			.replace(/\x1B[PX^_][^\x1B]*\x1B\\/g, ''); // DCS/PM/APC/SOS
 
 		const readyRe = /(ready|listening|compiled|local:\s*https?:\/\/|started server on|server running|http:\/\/localhost|http:\/\/127\.0\.0\.1)/i;
 
@@ -273,27 +273,38 @@ export class EcosystemsAgentTools {
 				resolve(r);
 			};
 
+			// Raw chunk capture — fires continuously, including for progress spinners.
+			store.add(instance.onData((data) => {
+				const clean = stripAnsi(data);
+				if (!clean) { return; }
+				collected += clean.length;
+				chunks.push(clean);
+				if (collected > MAX_BYTES * 2) {
+					// Keep only the last MAX_BYTES*2 worth so memory stays bounded.
+					let total = 0;
+					for (let i = chunks.length - 1; i >= 0; i--) {
+						total += chunks[i].length;
+						if (total > MAX_BYTES * 2) {
+							chunks.splice(0, i + 1);
+							collected = total;
+							break;
+						}
+					}
+				}
+			}));
+
+			// Line-level detection for sentinel and readiness markers.
 			store.add(instance.onLineData((rawLine) => {
 				const line = stripAnsi(rawLine);
-				// Sentinel match — don't include the marker line itself in captured output.
 				if (!isBackground) {
 					const m = sentinelRe.exec(line);
 					if (m) {
 						finish({ exitCode: Number(m[1]) || 0, reason: 'exit' });
 						return;
 					}
-					// Hide the echoed command-with-sentinel line itself from captured output.
-					if (line.includes(sentinel)) {
-						return;
-					}
 				}
-				append(rawLine + '\n');
 				if (isBackground && readyRe.test(line)) {
 					finish({ reason: 'ready' });
-				}
-				if (collected > MAX_BYTES) {
-					lines.push('\n…[output truncated]');
-					if (isBackground) { finish({ reason: 'ready' }); }
 				}
 			}));
 			// onExit only fires if the shell itself dies; treat that as command exit too.
@@ -321,8 +332,22 @@ export class EcosystemsAgentTools {
 
 		store.dispose();
 
-		const output = lines.join('').trim();
-		const truncated = output.length > MAX_BYTES ? output.slice(-MAX_BYTES) : output;
+		// Collapse spinner output: keep only the last "frame" between consecutive CRs.
+		const raw = chunks.join('');
+		const normalized = raw
+			.split('\n')
+			.map(seg => {
+				const idx = seg.lastIndexOf('\r');
+				return idx >= 0 ? seg.slice(idx + 1) : seg;
+			})
+			.join('\n');
+		// Drop any line containing the sentinel marker (the echoed wrapped command).
+		const output = normalized
+			.split('\n')
+			.filter(l => !l.includes(sentinel))
+			.join('\n')
+			.trim();
+		const truncated = output.length > MAX_BYTES ? '…[earlier output truncated]\n' + output.slice(-MAX_BYTES) : output;
 		const headline = (() => {
 			switch (result.reason) {
 				case 'exit': return result.exitCode === 0
