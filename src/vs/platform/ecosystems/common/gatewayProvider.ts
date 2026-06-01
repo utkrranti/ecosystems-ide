@@ -306,6 +306,9 @@ export class EcosystemsGatewayProvider implements IEcosystemsGatewayProvider {
 		if (statusCode === 429) {
 			return { code: 'RATE_LIMITED' as const, message: 'Rate limited. Try again shortly.' };
 		}
+		if (statusCode === 404) {
+			return { code: 'PROVIDER' as const, message: 'Model not available for this API key (404). Check your provider key in services/gateway/.env.local and that the selected model is enabled for that project.' };
+		}
 		if (statusCode && statusCode >= 400) {
 			return { code: 'PROVIDER' as const, message: `Gateway request failed (${statusCode}).` };
 		}
@@ -315,9 +318,9 @@ export class EcosystemsGatewayProvider implements IEcosystemsGatewayProvider {
 	private defaultModels(provider?: AiProvider): GatewayModelInfo[] {
 		if (provider === 'anthropic') {
 			return [
-				{ id: 'claude-opus-4-5', displayName: 'Claude Opus 4.5', tier: 'free', features: ['chat', 'inline'] },
-				{ id: 'claude-sonnet-4-5', displayName: 'Claude Sonnet 4.5', tier: 'free', features: ['chat', 'inline'] },
-				{ id: 'claude-3-5-haiku-latest', displayName: 'Claude 3.5 Haiku', tier: 'free', features: ['chat', 'inline'] },
+				{ id: 'claude-opus-4-8', displayName: 'Claude Opus 4.8', tier: 'free', features: ['chat', 'inline'] },
+				{ id: 'claude-sonnet-4-6', displayName: 'Claude Sonnet 4.6', tier: 'free', features: ['chat', 'inline'] },
+				{ id: 'claude-haiku-4-5-20251001', displayName: 'Claude Haiku 4.5', tier: 'free', features: ['chat', 'inline'] },
 			];
 		}
 		return PHASE0_GATEWAY_MODELS.map(m => ({
