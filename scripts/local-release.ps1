@@ -131,11 +131,24 @@ Write-Step "Uploading to ${SshHost}:${RemotePath}"
 $mkdirs = ($staged | ForEach-Object { "$RemotePath/$($_.Platform)" }) -join ' '
 ssh $SshHost "mkdir -p $mkdirs"
 
-# Upload each platform
+# Upload each platform + create -latest symlinks so the website URLs always resolve
 foreach ($s in $staged) {
     $localDir = Join-Path $Staging $s.Platform
     Write-Host "  Uploading $($s.Platform) ($($s.Files.Count) file(s))..."
     scp "$localDir\*" "${SshHost}:${RemotePath}/$($s.Platform)/"
+
+    # Create -latest copies for each file (removes old latest first)
+    $latestCmds = $s.Files | ForEach-Object {
+        $versioned = $_.Name
+        # Replace -<version>. with -latest. e.g. AltusIDEUserSetup-x64-1.96.2.exe -> AltusIDEUserSetup-x64-latest.exe
+        $latest = $versioned -replace '-[\d]+\.[\d]+\.[\d]+\.', '-latest.'
+        if ($latest -ne $versioned) {
+            "cp -f '$RemotePath/$($s.Platform)/$versioned' '$RemotePath/$($s.Platform)/$latest'"
+        }
+    }
+    if ($latestCmds) {
+        ssh $SshHost ($latestCmds -join ' && ')
+    }
 }
 
 # Patch nginx to serve /setups/ if not already configured
