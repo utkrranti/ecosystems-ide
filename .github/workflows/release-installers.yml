@@ -1,0 +1,102 @@
+# Build Altus IDE installers for Windows, macOS, and Linux.
+# Trigger manually: Actions → Release installers → Run workflow
+name: Release installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_windows:
+        description: 'Windows (.exe + .msi)'
+        type: boolean
+        default: true
+      build_macos:
+        description: 'macOS (.dmg + .zip)'
+        type: boolean
+        default: true
+      build_linux:
+        description: 'Linux (.tar.gz + .deb)'
+        type: boolean
+        default: true
+
+jobs:
+  windows:
+    if: inputs.build_windows
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install WiX Toolset v3 (for MSI)
+        run: choco install wixtoolset --version 3.14.1 -y --no-progress
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Windows installers
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-installers.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-windows
+          path: dist/win32-x64/*
+          if-no-files-found: error
+
+  macos:
+    if: inputs.build_macos
+    runs-on: macos-latest
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        arch: [arm64, x64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build macOS installers
+        run: chmod +x scripts/build-installers-mac.sh && ./scripts/build-installers-mac.sh ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-macos-${{ matrix.arch }}
+          path: dist/darwin-${{ matrix.arch }}/*
+          if-no-files-found: error
+
+  linux:
+    if: inputs.build_linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      matrix:
+        arch: [x64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libkrb5-dev libsecret-1-dev \
+            libx11-dev libxkbfile-dev libnotify-dev libnss3-dev dpkg-dev fakeroot
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Build Linux packages
+        run: chmod +x scripts/build-installers-linux.sh && ./scripts/build-installers-linux.sh ${{ matrix.arch }} --deb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-linux-${{ matrix.arch }}
+          path: dist/linux-${{ matrix.arch }}/*
+          if-no-files-found: error
