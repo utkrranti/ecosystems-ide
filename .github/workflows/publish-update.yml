@@ -1,0 +1,116 @@
+name: Publish IDE update
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: GitHub Environment
+        type: choice
+        options:
+          - production
+          - staging
+        default: production
+      arch:
+        description: Windows architecture
+        type: choice
+        options:
+          - x64
+          - arm64
+        default: x64
+      build_installer:
+        description: Build installer before publishing
+        type: boolean
+        default: true
+
+concurrency:
+  group: publish-update-${{ inputs.target_environment }}
+  cancel-in-progress: false
+
+jobs:
+  build-windows:
+    if: ${{ inputs.build_installer }}
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Windows installers
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-installers.ps1 -Arch ${{ inputs.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-windows-${{ inputs.arch }}
+          path: dist/win32-${{ inputs.arch }}/*
+          if-no-files-found: error
+
+  publish:
+    needs: [build-windows]
+    if: ${{ always() && (needs.build-windows.result == 'success' || needs.build-windows.result == 'skipped') }}
+    runs-on: [self-hosted, altus-vps]
+    timeout-minutes: 30
+    environment: ${{ inputs.target_environment }}
+
+    steps:
+      - name: Verify publish configuration
+        run: |
+          test -n "${{ vars.UPDATES_BASE_URL }}" || (echo "Missing UPDATES_BASE_URL variable" && exit 1)
+
+      - uses: actions/checkout@v4
+
+      - name: Resolve version and commit
+        id: meta
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          COMMIT="$(git rev-parse HEAD)"
+          ARCH="${{ inputs.arch }}"
+          INSTALLER_NAME="AltusIDEUserSetup-${ARCH}-${VERSION}.exe"
+          INSTALLER_URL="${{ vars.UPDATES_BASE_URL }}/releases/${INSTALLER_NAME}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "commit=${COMMIT}" >> "$GITHUB_OUTPUT"
+          echo "installer_name=${INSTALLER_NAME}" >> "$GITHUB_OUTPUT"
+          echo "installer_url=${INSTALLER_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Download Windows installer artifact
+        if: ${{ inputs.build_installer }}
+        uses: actions/download-artifact@v4
+        with:
+          name: altus-ide-windows-${{ inputs.arch }}
+          path: dist/win32-${{ inputs.arch }}
+
+      - name: Publish installer on VPS (self-hosted runner)
+        id: file
+        env:
+          UPDATE_QUALITY: ${{ vars.UPDATE_QUALITY || 'stable' }}
+          UPDATE_LATEST_VERSION: ${{ steps.meta.outputs.version }}
+          UPDATE_LATEST_COMMIT: ${{ steps.meta.outputs.commit }}
+          UPDATE_INSTALLER_URL: ${{ steps.meta.outputs.installer_url }}
+          UPDATE_PLATFORMS: ${{ vars.UPDATE_PLATFORMS || 'win32-x64-user,win32-arm64-user' }}
+        run: |
+          ARCH="${{ inputs.arch }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+          CANDIDATE="dist/win32-${ARCH}/AltusIDEUserSetup-${ARCH}-${VERSION}.exe"
+          if [[ ! -f "${CANDIDATE}" ]]; then
+            echo "Installer not found at ${CANDIDATE}" >&2
+            ls -la "dist/win32-${ARCH}" || true
+            exit 1
+          fi
+          SHA256="$(sha256sum "${CANDIDATE}" | awk '{print $1}')"
+          echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
+          sudo mkdir -p /var/www/altus-updates/releases
+          sudo install -m 0644 "${CANDIDATE}" "/var/www/altus-updates/releases/${{ steps.meta.outputs.installer_name }}"
+          export UPDATE_INSTALLER_SHA256="${SHA256}"
+          test -f /opt/altus-chat-api/patch-update-release.sh || (echo "Deploy ide_apis first (patch-update-release.sh missing)" && exit 1)
+          sudo ENV_FILE=/opt/altus-chat-api/.env bash /opt/altus-chat-api/patch-update-release.sh
+
+      - name: Summary
+        run: |
+          echo "Published ${{ steps.meta.outputs.installer_url }}"
+          echo "Commit ${{ steps.meta.outputs.commit }}"
+          echo "SHA256 ${{ steps.file.outputs.sha256 }}"
