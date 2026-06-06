@@ -32,7 +32,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -62,7 +62,7 @@ jobs:
         run: |
           test -n "${{ vars.UPDATES_BASE_URL }}" || (echo "Missing UPDATES_BASE_URL variable" && exit 1)
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Resolve version and commit
         id: meta
