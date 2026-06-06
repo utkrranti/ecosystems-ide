@@ -24,5 +24,5 @@ product.overrides.json
 
 # EcoSystems
 _vscode_clone/
-services/gateway/.env
-services/gateway/.env.local
+dist/
+release-staging/
