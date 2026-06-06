@@ -44,7 +44,7 @@ jobs:
         run: npm ci
       - name: Build Windows installers
         run: powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-installers.ps1 -Arch ${{ inputs.arch }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: altus-ide-windows-${{ inputs.arch }}
           path: dist/win32-${{ inputs.arch }}/*
