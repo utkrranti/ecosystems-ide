@@ -73,9 +73,36 @@ if (-not $MsiOnly) {
 		throw "Packaged app missing at $appDir. Run without -SkipPackage first."
 	}
 
-	Write-Host 'Building Inno Setup installers...' -ForegroundColor Cyan
-	Invoke-Gulp "vscode-win32-$Arch-system-setup"
-	Invoke-Gulp "vscode-win32-$Arch-user-setup"
+	Write-Host 'Building Inno Setup installers (user-setup + system-setup in parallel)...' -ForegroundColor Cyan
+	$logDir = Join-Path $repoRoot '.build\logs'
+	New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+
+	$setupTasks = @('system-setup', 'user-setup')
+	$setupProcs = $setupTasks | ForEach-Object {
+		$t = "vscode-win32-$Arch-$_"
+		$logOut = Join-Path $logDir "$t.log"
+		$logErr = Join-Path $logDir "$t.err"
+		Write-Host "  [parallel] gulp $t" -ForegroundColor DarkCyan
+		$p = Start-Process -FilePath node -ArgumentList "--max-old-space-size=8192", $gulp, $t `
+			-WorkingDirectory $repoRoot -PassThru -NoNewWindow `
+			-RedirectStandardOutput $logOut -RedirectStandardError $logErr
+		[PSCustomObject]@{ Name = $_; Task = $t; Process = $p; LogOut = $logOut; LogErr = $logErr }
+	}
+
+	$setupProcs | ForEach-Object { $_.Process.WaitForExit() }
+
+	$setupFailed = @()
+	foreach ($s in $setupProcs) {
+		if ($s.Process.ExitCode -ne 0) {
+			Write-Host "  FAILED: gulp $($s.Task) (exit $($s.Process.ExitCode))" -ForegroundColor Red
+			if (Test-Path $s.LogErr) { Get-Content $s.LogErr | Select-Object -Last 30 | Write-Host }
+			elseif (Test-Path $s.LogOut) { Get-Content $s.LogOut | Select-Object -Last 30 | Write-Host }
+			$setupFailed += $s.Task
+		} else {
+			Write-Host "  OK: gulp $($s.Task)" -ForegroundColor Green
+		}
+	}
+	if ($setupFailed.Count -gt 0) { throw "Setup builds failed: $($setupFailed -join ', ')" }
 
 	Rename-SetupExe -SetupSubDir 'system-setup' -TargetName "AltusIDESetup-$Arch-$version.exe"
 	Rename-SetupExe -SetupSubDir 'user-setup' -TargetName "AltusIDEUserSetup-$Arch-$version.exe"

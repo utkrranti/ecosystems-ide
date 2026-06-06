@@ -26,6 +26,10 @@ concurrency:
   group: publish-update-${{ inputs.target_environment }}
   cancel-in-progress: false
 
+# ─────────────────────────────────────────────
+# BUILD JOBS  (all run in parallel)
+# ─────────────────────────────────────────────
+
 jobs:
   build-windows:
     if: ${{ inputs.build_installer }}
@@ -50,8 +54,64 @@ jobs:
           path: dist/win32-${{ inputs.arch }}/*
           if-no-files-found: error
 
+  build-macos:
+    if: ${{ inputs.build_installer }}
+    runs-on: macos-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build macOS installers (arm64)
+        run: bash ./scripts/build-installers-mac.sh arm64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-macos-arm64
+          path: dist/darwin-arm64/*
+          if-no-files-found: error
+
+  build-linux:
+    if: ${{ inputs.build_installer }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            build-essential libx11-dev libxkbfile-dev libsecret-1-dev \
+            fakeroot dpkg-dev rpm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Linux installers
+        run: bash ./scripts/build-installers-linux.sh x64 --deb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: altus-ide-linux-x64
+          path: dist/linux-x64/*
+          if-no-files-found: error
+
+# ─────────────────────────────────────────────
+# PUBLISH JOB  (self-hosted VPS runner)
+# ─────────────────────────────────────────────
+
   publish:
-    needs: [build-windows]
+    needs: [build-windows, build-macos, build-linux]
     if: ${{ always() && (needs.build-windows.result == 'success' || needs.build-windows.result == 'skipped') }}
     runs-on: [self-hosted, altus-vps]
     timeout-minutes: 30
@@ -77,21 +137,64 @@ jobs:
           echo "installer_name=${INSTALLER_NAME}" >> "$GITHUB_OUTPUT"
           echo "installer_url=${INSTALLER_URL}" >> "$GITHUB_OUTPUT"
 
-      - name: Download Windows installer artifact
-        if: ${{ inputs.build_installer }}
+      # ── Download artifacts (skip gracefully if build was skipped) ──
+
+      - name: Download Windows installer
+        if: ${{ inputs.build_installer && needs.build-windows.result == 'success' }}
         uses: actions/download-artifact@v4
         with:
           name: altus-ide-windows-${{ inputs.arch }}
           path: dist/win32-${{ inputs.arch }}
 
-      - name: Publish installer on VPS (self-hosted runner)
-        id: file
+      - name: Download macOS installer
+        if: ${{ inputs.build_installer && needs.build-macos.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: altus-ide-macos-arm64
+          path: dist/darwin-arm64
+        continue-on-error: true
+
+      - name: Download Linux installer
+        if: ${{ inputs.build_installer && needs.build-linux.result == 'success' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: altus-ide-linux-x64
+          path: dist/linux-x64
+        continue-on-error: true
+
+      # ── Deploy Windows (setups/ download page + releases/ auto-update) ──
+
+      - name: Deploy Windows to /setups/
+        id: win_setups
+        if: ${{ inputs.build_installer && needs.build-windows.result == 'success' }}
+        run: |
+          ARCH="${{ inputs.arch }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+          DIR="dist/win32-${ARCH}"
+
+          sudo mkdir -p /var/www/altus-setups/windows
+
+          for f in "$DIR"/*.exe "$DIR"/*.msi; do
+            [[ -f "$f" ]] || continue
+            fname="$(basename "$f")"
+            sudo install -m 0644 "$f" "/var/www/altus-setups/windows/$fname"
+            # create -latest copy: replace -x.y.z. with -latest.
+            latest="${fname//-${VERSION}./-latest.}"
+            if [[ "$latest" != "$fname" ]]; then
+              sudo cp "/var/www/altus-setups/windows/$fname" "/var/www/altus-setups/windows/$latest"
+            fi
+            echo "setups/windows/$fname"
+          done
+
+      - name: Publish Windows to /releases/ and update auto-update feed
+        id: win_update
+        if: ${{ inputs.build_installer && needs.build-windows.result == 'success' }}
         run: |
           ARCH="${{ inputs.arch }}"
           VERSION="${{ steps.meta.outputs.version }}"
           CANDIDATE="dist/win32-${ARCH}/AltusIDEUserSetup-${ARCH}-${VERSION}.exe"
           if [[ ! -f "${CANDIDATE}" ]]; then
-            echo "Installer not found at ${CANDIDATE}" >&2
+            echo "User-setup EXE not found at ${CANDIDATE}" >&2
             ls -la "dist/win32-${ARCH}" || true
             exit 1
           fi
@@ -110,8 +213,65 @@ jobs:
             UPDATE_PLATFORMS="${{ vars.UPDATE_PLATFORMS || 'win32-x64-user,win32-arm64-user' }}" \
             /usr/bin/bash "${PATCH}"
 
+      # ── Deploy macOS ──
+
+      - name: Deploy macOS to /setups/
+        if: ${{ inputs.build_installer && needs.build-macos.result == 'success' }}
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          DIR="dist/darwin-arm64"
+          sudo mkdir -p /var/www/altus-setups/macos
+
+          for f in "$DIR"/*.dmg "$DIR"/*.zip; do
+            [[ -f "$f" ]] || continue
+            fname="$(basename "$f")"
+            sudo install -m 0644 "$f" "/var/www/altus-setups/macos/$fname"
+            latest="${fname//-${VERSION}./-latest.}"
+            if [[ "$latest" != "$fname" ]]; then
+              sudo cp "/var/www/altus-setups/macos/$fname" "/var/www/altus-setups/macos/$latest"
+            fi
+            echo "setups/macos/$fname"
+          done
+
+      # ── Deploy Linux ──
+
+      - name: Deploy Linux to /setups/
+        if: ${{ inputs.build_installer && needs.build-linux.result == 'success' }}
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          DIR="dist/linux-x64"
+          sudo mkdir -p /var/www/altus-setups/linux
+
+          for f in "$DIR"/*.tar.gz "$DIR"/*.deb; do
+            [[ -f "$f" ]] || continue
+            fname="$(basename "$f")"
+            sudo install -m 0644 "$f" "/var/www/altus-setups/linux/$fname"
+            latest="${fname//-${VERSION}./-latest.}"
+            if [[ "$latest" != "$fname" ]]; then
+              sudo cp "/var/www/altus-setups/linux/$fname" "/var/www/altus-setups/linux/$latest"
+            fi
+            echo "setups/linux/$fname"
+          done
+
+      # ── Summary ──
+
       - name: Summary
         run: |
-          echo "Published ${{ steps.meta.outputs.installer_url }}"
-          echo "Commit ${{ steps.meta.outputs.commit }}"
-          echo "SHA256 ${{ steps.file.outputs.sha256 }}"
+          VERSION="${{ steps.meta.outputs.version }}"
+          echo "## Published Altus IDE v${VERSION}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Platform | File | URL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          for f in /var/www/altus-setups/windows/*-latest.*; do
+            [[ -f "$f" ]] && echo "| Windows | $(basename $f) | https://altuside.com/setups/windows/$(basename $f) |" >> "$GITHUB_STEP_SUMMARY"
+          done
+          for f in /var/www/altus-setups/macos/*-latest.*; do
+            [[ -f "$f" ]] && echo "| macOS | $(basename $f) | https://altuside.com/setups/macos/$(basename $f) |" >> "$GITHUB_STEP_SUMMARY"
+          done
+          for f in /var/www/altus-setups/linux/*-latest.*; do
+            [[ -f "$f" ]] && echo "| Linux | $(basename $f) | https://altuside.com/setups/linux/$(basename $f) |" >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Auto-update: ${{ steps.meta.outputs.installer_url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commit: ${{ steps.meta.outputs.commit }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "SHA256: ${{ steps.win_update.outputs.sha256 }}" >> "$GITHUB_STEP_SUMMARY"
