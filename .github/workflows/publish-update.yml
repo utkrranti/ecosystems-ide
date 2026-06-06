@@ -86,12 +86,6 @@ jobs:
 
       - name: Publish installer on VPS (self-hosted runner)
         id: file
-        env:
-          UPDATE_QUALITY: ${{ vars.UPDATE_QUALITY || 'stable' }}
-          UPDATE_LATEST_VERSION: ${{ steps.meta.outputs.version }}
-          UPDATE_LATEST_COMMIT: ${{ steps.meta.outputs.commit }}
-          UPDATE_INSTALLER_URL: ${{ steps.meta.outputs.installer_url }}
-          UPDATE_PLATFORMS: ${{ vars.UPDATE_PLATFORMS || 'win32-x64-user,win32-arm64-user' }}
         run: |
           ARCH="${{ inputs.arch }}"
           VERSION="${{ steps.meta.outputs.version }}"
@@ -105,9 +99,16 @@ jobs:
           echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
           sudo mkdir -p /var/www/altus-updates/releases
           sudo install -m 0644 "${CANDIDATE}" "/var/www/altus-updates/releases/${{ steps.meta.outputs.installer_name }}"
-          export UPDATE_INSTALLER_SHA256="${SHA256}"
-          test -f /opt/altus-chat-api/patch-update-release.sh || (echo "Deploy ide_apis first (patch-update-release.sh missing)" && exit 1)
-          sudo ENV_FILE=/opt/altus-chat-api/.env bash /opt/altus-chat-api/patch-update-release.sh
+          PATCH=/opt/altus-chat-api/deploy/patch-update-release.sh
+          test -f "${PATCH}" || (echo "Deploy ide_apis first (${PATCH} missing)" && exit 1)
+          sudo \
+            UPDATE_QUALITY="${{ vars.UPDATE_QUALITY || 'stable' }}" \
+            UPDATE_LATEST_VERSION="${{ steps.meta.outputs.version }}" \
+            UPDATE_LATEST_COMMIT="${{ steps.meta.outputs.commit }}" \
+            UPDATE_INSTALLER_URL="${{ steps.meta.outputs.installer_url }}" \
+            UPDATE_INSTALLER_SHA256="${SHA256}" \
+            UPDATE_PLATFORMS="${{ vars.UPDATE_PLATFORMS || 'win32-x64-user,win32-arm64-user' }}" \
+            /usr/bin/bash "${PATCH}"
 
       - name: Summary
         run: |
