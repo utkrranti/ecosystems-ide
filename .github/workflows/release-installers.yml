@@ -38,7 +38,7 @@ jobs:
         run: npm ci
       - name: Build Windows installers
         run: powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build-installers.ps1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: altus-ide-windows
           path: dist/win32-x64/*
@@ -64,7 +64,7 @@ jobs:
         run: npm ci
       - name: Build macOS installers
         run: chmod +x scripts/build-installers-mac.sh && ./scripts/build-installers-mac.sh ${{ matrix.arch }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: altus-ide-macos-${{ matrix.arch }}
           path: dist/darwin-${{ matrix.arch }}/*
@@ -95,7 +95,7 @@ jobs:
         run: npm ci
       - name: Build Linux packages
         run: chmod +x scripts/build-installers-linux.sh && ./scripts/build-installers-linux.sh ${{ matrix.arch }} --deb
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: altus-ide-linux-${{ matrix.arch }}
           path: dist/linux-${{ matrix.arch }}/*
