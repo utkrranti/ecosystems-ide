@@ -1,42 +1,33 @@
 # EcoSystems IDE
 
-A VS Code–class desktop editor with **native AI** — inline completion, project-aware chat, and (future) guarded agent workflows.
+A VS Code–class desktop editor with **native AI** — built on Code-OSS 1.96.2.
 
-## Status
+| | |
+|---|---|
+| **Docs** | [docs/README.md](./docs/README.md) · [Reading sequence](./docs/READING-SEQUENCE.md) |
+| **Repo** | https://github.com/utkrranti/ecosystems-ide |
+| **Upstream** | [microsoft/vscode](https://github.com/microsoft/vscode) @ 1.96.2 |
 
-**Phase:** Planning complete for Phase 0 — implementation not started.
+## Quick start (developers)
 
-## Documentation
+```powershell
+corepack enable
+yarn
+yarn compile
+.\scripts\code.bat
+```
 
-All planning lives in [`docs/`](./docs/README.md). **Start with the [reading sequence](./docs/READING-SEQUENCE.md).**
+See [docs/dev/setup.md](./docs/dev/setup.md) for full prerequisites (Node 20, Python, VS Build Tools on Windows).
 
-| Doc | Description |
-|-----|-------------|
-| [Product vision](./docs/01-product-vision.md) | North star, personas, pillars |
-| [Tech stack](./docs/02-tech-stack.md) | Electron, Code-OSS, AI layer |
-| [Architecture](./docs/03-solution-architecture.md) | System design |
-| [Roadmap](./docs/04-roadmap.md) | Phase 0–3 plan |
-| [ADRs](./docs/05-architectural-decisions.md) | Architectural decisions |
-| [Documentation checklist](./docs/DOCUMENTATION-CHECKLIST.md) | Pre-implementation gates |
-| [Reading sequence](./docs/READING-SEQUENCE.md) | **Read docs in this order** |
+## EcoSystems code
 
-**Phase 0 scope:** [PRD v1](./docs/product/PRD-v1-phase0.md)
-
-## Repository strategy
-
-Single monorepo for the desktop product — see **ADR-010** in [05-architectural-decisions.md](./docs/05-architectural-decisions.md).
-
-## Stack (Summary)
-
-- **Base:** Code-OSS fork (MIT)
-- **Shell:** Electron + TypeScript
-- **AI:** Core platform services (inline + chat in Phase 0)
-- **Provider:** User-supplied OpenAI-compatible API key
-
-## Gate before coding
-
-All **29 must-have docs** are written. See [docs/program/sign-off.md](./docs/program/sign-off.md) Gate A and [fork-spike-checklist.md](./docs/dev/fork-spike-checklist.md).
+| Path | Purpose |
+|------|---------|
+| `src/vs/platform/ecosystems/` | AI platform services |
+| `src/vs/workbench/contrib/ecosystems/` | Workbench UI (AI sidebar) |
 
 ## License
 
-MIT (inherited from Code-OSS). See [docs/legal/oss-attribution.md](./docs/legal/oss-attribution.md).
+MIT — inherited from Code-OSS. See [docs/legal/oss-attribution.md](./docs/legal/oss-attribution.md).
+
+EcoSystems IDE is **not** Microsoft Visual Studio Code and is not affiliated with Microsoft.

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product
+		Id="*"
+		Name="Altus IDE"
+		Language="1033"
+		Version="$(var.ProductVersion)"
+		Manufacturer="Altus"
+		UpgradeCode="D77B7E06-80BA-4137-BCF4-654B95CCEBC5">
+		<Package
+			InstallerVersion="500"
+			Compressed="yes"
+			InstallScope="perMachine"
+			Platform="x64"
+			Description="Altus IDE"
+			Comments="Altus IDE $(var.ProductVersion)" />
+		<MajorUpgrade DowngradeErrorMessage="A newer version of Altus IDE is already installed." />
+		<MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+		<Feature Id="MainFeature" Title="Altus IDE" Level="1">
+			<ComponentGroupRef Id="HarvestedFiles" />
+			<ComponentRef Id="StartMenuShortcut" />
+		</Feature>
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFiles64Folder">
+				<Directory Id="INSTALLFOLDER" Name="Altus IDE" />
+			</Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="Altus IDE" />
+			</Directory>
+		</Directory>
+
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="StartMenuShortcut" Guid="*">
+				<Shortcut
+					Id="ApplicationStartMenuShortcut"
+					Name="Altus IDE"
+					Description="Altus IDE"
+					Target="[INSTALLFOLDER]Altus IDE.exe"
+					WorkingDirectory="INSTALLFOLDER" />
+				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKLM" Key="Software\Altus\AltusIDE" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+	</Product>
+</Wix>

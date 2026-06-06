@@ -1,28 +1,28 @@
-# Dependencies
-node_modules/
-out/
-.build/
-dist/
-
-# IDE
-.vscode-test/
-*.vsix
-
-# OS
 .DS_Store
+.cache
+npm-debug.log
 Thumbs.db
+node_modules/
+.build/
+.vscode/extensions/**/out/
+extensions/**/dist/
+/out*/
+/extensions/**/out/
+build/node_modules
+coverage/
+test_data/
+test-results/
+test-results.xml
+vscode.lsif
+vscode.db
+/.profile-oss
+/cli/target
+/cli/openssl
+product.overrides.json
+*.snap.actual
+.vscode-test
 
-# Secrets — never commit
-.env
-.env.*
-*.pem
-**/secrets.json
-
-# Logs
-*.log
-npm-debug.log*
-
-# Build artifacts
-*.exe
-*.dmg
-*.AppImage
+# EcoSystems
+_vscode_clone/
+services/gateway/.env
+services/gateway/.env.local

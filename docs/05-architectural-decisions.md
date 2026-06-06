@@ -200,24 +200,58 @@ Phase 0 chat UI uses **vanilla TypeScript + CSS** in the webview, themed with VS
 
 ## ADR-009: Default Cloud Provider — OpenAI-Compatible BYOK
 
-**Status:** Accepted  
+**Status:** Superseded by [ADR-011](#adr-011-inbuilt-ai-via-ecosystems-gateway)  
 **Date:** 2026-05-30  
 
 ### Context
 
 Phase 0 needs one default inference path. Options: OpenAI native, Anthropic native, or OpenAI-compatible abstraction.
 
-### Decision
+### Decision (historical)
 
-Default provider is **OpenAI-compatible API** with user **bring-your-own-key**. Default models: `gpt-4o-mini` for chat and inline. Custom base URL supported for Azure, Groq, LiteLLM, etc.
-
-Anthropic and Ollama are separate adapters in Phase 1/2.
+Default provider was **OpenAI-compatible API** with user **bring-your-own-key**.
 
 ### Consequences
 
-**Positive:** Single HTTP client for Phase 0; broad compatibility.  
-**Negative:** Anthropic users need Phase 1 adapter or OpenAI proxy.  
-**Neutral:** No bundled credits; user pays provider directly.
+Superseded — product direction is **inbuilt AI** via EcoSystems Gateway (ADR-011). BYOK is not offered to end users in Phase 0+.
+
+---
+
+## ADR-011: Inbuilt AI via EcoSystems Gateway
+
+**Status:** Accepted  
+**Date:** 2026-05-31  
+
+### Context
+
+EcoSystems IDE must ship **built-in AI** like a product (not a thin client where users paste provider API keys). Users sign in / hold a license; EcoSystems operates upstream model access, billing, and quotas.
+
+ADR-009 (BYOK) was rejected for the consumer product.
+
+### Decision
+
+All cloud AI from the desktop IDE flows through the **EcoSystems AI Gateway**:
+
+```
+IDE → Model Router → EcoSystems AI Gateway (user session / license)
+                              ↓
+                    OpenAI / Anthropic / etc. (EcoSystems keys — server-side only)
+```
+
+**Rules:**
+
+1. **No user-supplied LLM API keys** in Settings or keychain for Phase 0 consumer builds.
+2. **Default provider** in the model router is `ecosystems` (gateway client), not direct OpenAI.
+3. **Provider keys** live only on the gateway; never shipped in the IDE or webview.
+4. **Auth:** user session token or license JWT issued by EcoSystems accounts service; stored via `ISecretsService` (OS keychain) as **session credentials**, not `sk-...` keys.
+5. **Model list** is curated by gateway + plan tier; IDE exposes allowed models in Settings dropdown.
+6. **Local dev:** gateway may run at `http://localhost:8080` with team dev keys on the server only.
+
+### Consequences
+
+**Positive:** Unified product UX; EcoSystems controls cost, abuse, and model policy; simpler user onboarding.  
+**Negative:** Requires gateway + accounts/billing before production AI; EcoSystems pays upstream providers.  
+**Neutral:** Model router abstraction unchanged; only the default provider and auth model change. Enterprise BYOK may be revisited as a **separate tier** in Phase 3+, not the default.
 
 ---
 
@@ -228,7 +262,7 @@ Anthropic and Ollama are separate adapters in Phase 1/2.
 
 ### Context
 
-EcoSystems IDE could be split across multiple repositories (editor fork, AI platform, extensions, docs, cloud API) or kept in one monorepo. The product is a **desktop application** with in-process AI and no EcoSystems backend in Phase 0–2.
+EcoSystems IDE could be split across multiple repositories (editor fork, AI platform, extensions, docs, cloud API) or kept in one monorepo. The product is a **desktop application** with in-process AI; cloud inference goes through the **EcoSystems AI Gateway** (ADR-011), which may live in-repo or as a deployable service under `services/` when implemented.
 
 ### Decision
 
@@ -256,6 +290,7 @@ Separate repositories are deferred until a distinct deployable service is requir
 
 | ID | Topic | When needed |
 |----|-------|-------------|
-| ADR-011 | Update channel & code signing | Phase 0 packaging |
-| ADR-012 | Telemetry schema (if any) | Phase 1 |
-| ADR-013 | Extension API surface for AI context | Phase 2 |
+| ADR-012 | Gateway API contract (OpenAPI) | Epic E2 |
+| ADR-013 | Update channel & code signing | Phase 0 packaging |
+| ADR-014 | Telemetry schema (if any) | Phase 1 |
+| ADR-015 | Extension API surface for AI context | Phase 2 |

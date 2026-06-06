@@ -150,7 +150,7 @@ Launch with a **curated allowlist**; expand marketplace compatibility deliberate
 | Tool | Purpose |
 |------|---------|
 | Node.js 20+ | Build scripts and extension host |
-| yarn or npm | Package management |
+| Package manager | **npm** (not yarn — enforced by upstream preinstall) |
 | gulp + esbuild | VS Code build pipeline |
 | electron-builder | Installers (.exe, .dmg, .AppImage) |
 | electron-updater | Auto-update |

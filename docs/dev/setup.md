@@ -17,7 +17,7 @@ How to clone, build, and run **EcoSystems IDE** from source on a developer machi
 | Node.js | 20.x LTS | `node --version` |
 | Git | 2.40+ | `git --version` |
 | Python | 3.11+ | `python --version` |
-| Yarn | 1.22+ | `yarn --version` |
+| **npm** | 10+ (use `npm ci` — **not yarn**; upstream blocks yarn) |
 
 Enable Corepack if needed:
 
@@ -68,10 +68,12 @@ git checkout develop
 ## 3. Install Dependencies
 
 ```powershell
-yarn
+npm ci
 ```
 
-First install downloads Electron, native modules (`node-pty`, `keytar`, `@vscode/ripgrep`), and may take **10–20 minutes**.
+First install downloads Electron and native modules and may take **10–20 minutes**.
+
+> **Important:** VS Code 1.96+ requires **npm**, not yarn. Running `yarn` will fail in `preinstall.js`.
 
 ### Common install failures
 
@@ -87,13 +89,13 @@ First install downloads Electron, native modules (`node-pty`, `keytar`, `@vscode
 ## 4. First Build
 
 ```powershell
-yarn compile
+npm run compile
 ```
 
 Or for active development (incremental rebuild):
 
 ```powershell
-yarn watch
+npm run watch
 ```
 
 **Expected first compile time:** 15–30 minutes (depends on hardware).
@@ -154,12 +156,13 @@ Pass a folder to open:
 
 ## 6. Configure AI (Development)
 
-1. Open **Settings** → **EcoSystems AI**
-2. Enter OpenAI-compatible API key (stored in OS keychain)
-3. Set chat model: `gpt-4o-mini` (default)
-4. Toggle **Enable AI**
+1. Run **EcoSystems AI Gateway** locally (or use team dev environment)
+2. Set `ecosystems.ai.gateway.baseUrl` → `http://localhost:8080/v1` (if not default)
+3. **Sign in** to EcoSystems in the IDE (dev account)
+4. Set chat model: `gpt-4o-mini` (default)
+5. Toggle **Enable AI**
 
-**Never commit API keys.** Use personal dev keys only.
+**Never commit session tokens or upstream API keys.** Gateway dev keys stay on the server only.
 
 Verify keychain on Windows: Credential Manager → Windows Credentials → look for `ecosystems-ide`.
 

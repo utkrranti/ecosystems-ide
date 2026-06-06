@@ -43,7 +43,7 @@ Living document of what EcoSystems IDE **will not** do (or not yet). Prevents sc
 | NG-011 | Telemetry / product analytics | Phase 1 (opt-in) |
 | NG-012 | macOS/Linux signed installers | Phase 1 |
 | NG-013 | Custom themes beyond default + dark/light | Phase 1 |
-| NG-014 | Copilot-style license / bundled model access | TBD — BYOK in Phase 0 |
+| NG-014 | User BYOK / paste provider API keys | Inbuilt via EcoSystems Gateway only (ADR-011) |
 
 ---
 
