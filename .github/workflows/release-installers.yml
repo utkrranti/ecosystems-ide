@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install WiX Toolset v3 (for MSI)
-        run: choco install wixtoolset --version 3.14.1 -y --no-progress
+        run: choco install wixtoolset -y --no-progress --skip-if-already-installed
       - name: Install dependencies
         run: npm ci
       - name: Build Windows installers
