@@ -1068,3 +1068,80 @@
 .monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlide .getting-started-checkbox {
 	border-color: var(--vscode-checkbox-border) !important;
 }
+
+/* Altus futuristic welcome page theme */
+
+/* Ambient radial glow in background */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories {
+	background:
+		radial-gradient(ellipse 60% 40% at 20% 15%, rgba(124, 92, 255, 0.06) 0%, transparent 70%),
+		radial-gradient(ellipse 50% 35% at 80% 85%, rgba(25, 200, 255, 0.05) 0%, transparent 70%);
+}
+
+/* Column section labels (h2: "Start", "Recent", "Walkthroughs") */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories h2 {
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	background: linear-gradient(90deg, #9d7fff 0%, #19c8ff 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	margin-bottom: 8px;
+	opacity: 0.85;
+}
+
+/* Walkthrough category cards - glassmorphism */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .getting-started-category {
+	border-radius: 10px !important;
+	border: 1px solid rgba(124, 92, 255, 0.18) !important;
+	background: rgba(124, 92, 255, 0.04) !important;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.18s ease;
+	margin-bottom: 6px !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .getting-started-category:hover {
+	border-color: rgba(124, 92, 255, 0.55) !important;
+	box-shadow: 0 0 16px rgba(124, 92, 255, 0.15), 0 0 6px rgba(25, 200, 255, 0.08) !important;
+	transform: translateY(-1px);
+}
+
+/* Progress bar: purple-to-cyan gradient */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .progress-bar-inner {
+	background: linear-gradient(90deg, #7c5cff, #19c8ff) !important;
+}
+
+/* Start / Recent list items: hover accent */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .start-container button:hover,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories li:hover {
+	color: #a98fff;
+}
+
+/* Subtle left accent bar on hovered start items */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .start-container button {
+	border-radius: 6px;
+	padding: 2px 6px;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .start-container button:hover {
+	background: rgba(124, 92, 255, 0.1) !important;
+}
+
+/* Left column separator */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories > .gettingStartedCategoriesContainer > .categories-column-left {
+	border-right: 1px solid rgba(124, 92, 255, 0.1);
+	padding-right: 16px;
+}
+
+/* Category icon: slightly brighter on hover */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .getting-started-category:hover .icon-widget {
+	color: #a98fff;
+}
+
+/* Category title: crisp weight */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .category-title {
+	font-weight: 500;
+	letter-spacing: 0.01em;
+}
