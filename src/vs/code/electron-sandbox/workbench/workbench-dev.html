@@ -38,6 +38,8 @@
 					'self'
 					https:
 					ws:
+					http://localhost:*
+					http://127.0.0.1:*
 				;
 				font-src
 					'self'
@@ -65,9 +67,66 @@
 					notebookChatEditController
 				;
 		"/>
+		<!-- Altus boot preloader -->
+		<style>
+			#altus-preloader {
+				position: fixed;
+				inset: 0;
+				z-index: 999999;
+				background: #0a0a0a;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 28px;
+				animation: altus-preloader-fade 0.5s ease-out 3s forwards;
+			}
+			#altus-preloader img {
+				width: 96px;
+				height: 96px;
+				border-radius: 20px;
+				animation: altus-preloader-glow 2s ease-in-out infinite;
+			}
+			#altus-preloader .altus-pre-name {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+				font-size: 13px;
+				font-weight: 500;
+				letter-spacing: 0.28em;
+				text-transform: uppercase;
+				color: rgba(255, 255, 255, 0.45);
+			}
+			#altus-preloader .altus-pre-dots {
+				display: flex;
+				gap: 8px;
+			}
+			#altus-preloader .altus-pre-dots span {
+				display: block;
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: #7c5cff;
+				animation: altus-dot-pulse 1.3s ease-in-out infinite;
+			}
+			#altus-preloader .altus-pre-dots span:nth-child(2) { animation-delay: 0.2s; }
+			#altus-preloader .altus-pre-dots span:nth-child(3) { animation-delay: 0.4s; background: #19c8ff; }
+			@keyframes altus-preloader-fade { to { opacity: 0; visibility: hidden; } }
+			@keyframes altus-preloader-glow {
+				0%, 100% { box-shadow: 0 0 36px 6px rgba(124, 92, 255, 0.5); }
+				50%       { box-shadow: 0 0 56px 14px rgba(25, 200, 255, 0.45); }
+			}
+			@keyframes altus-dot-pulse {
+				0%, 80%, 100% { transform: scale(0.5); opacity: 0.3; }
+				40%           { transform: scale(1); opacity: 1; }
+			}
+		</style>
 	</head>
 
 	<body aria-label="">
+		<div id="altus-preloader">
+			<img src="data:image/jpeg;base64,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" alt="Altus IDE">
+			<div class="altus-pre-name">Altus IDE</div>
+			<div class="altus-pre-dots"><span></span><span></span><span></span></div>
+		</div>
 	</body>
 
 	<!-- Startup (do not modify order of script tags!) -->

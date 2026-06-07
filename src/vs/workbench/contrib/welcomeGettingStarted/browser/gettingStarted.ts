@@ -42,6 +42,7 @@ import { ILabelService, Verbosity } from '../../../../platform/label/common/labe
 import { INotificationService } from '../../../../platform/notification/common/notification.js';
 import { Link } from '../../../../platform/opener/browser/link.js';
 import { IOpenerService } from '../../../../platform/opener/common/opener.js';
+import { ALTUS_PRODUCT_NAME } from '../../../../platform/ecosystems/common/altusBranding.js';
 import { IProductService } from '../../../../platform/product/common/productService.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
 import { IStorageService, StorageScope, StorageTarget, WillSaveStateReason } from '../../../../platform/storage/common/storage.js';
@@ -830,8 +831,15 @@ export class GettingStartedPage extends EditorPane {
 		}));
 
 		const header = $('.header', {},
-			$('h1.product-name.caption', {}, this.productService.nameLong),
-			$('p.subtitle.description', {}, localize({ key: 'gettingStarted.editingEvolved', comment: ['Shown as subtitle on the Welcome page.'] }, "Editing evolved"))
+			$('div.altus-welcome-header-inner', {},
+				$('div.altus-welcome-logo', {}),
+				$('div.altus-welcome-header-text', {},
+					$('h1.product-name', {},
+						$('span.ecosystems-welcome-title-text', {}, ALTUS_PRODUCT_NAME)),
+					$('p.subtitle.description', {},
+						$('span.ecosystems-welcome-subtitle-text', {}, localize({ key: 'gettingStarted.editingEvolved', comment: ['Shown as subtitle on the Welcome page.'] }, "Editing evolved")))
+				)
+			)
 		);
 
 		const leftColumn = $('.categories-column.categories-column-left', {},);
