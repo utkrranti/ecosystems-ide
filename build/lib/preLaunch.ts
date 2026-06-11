@@ -40,8 +40,10 @@ async function getElectron() {
 }
 
 async function ensureCompiled() {
-	if (!(await exists('out'))) {
-		await runProcess(npm, ['run', 'compile']);
+	// Partial compiles can leave `out/` without `main.js`; Electron then fails to launch.
+	if (!(await exists('out/main.js'))) {
+		// compile-client is sufficient for dev (main + workbench); full compile can fail on test snapshots.
+		await runProcess('node', ['./node_modules/gulp/bin/gulp.js', 'compile-client-dev']);
 	}
 }
 

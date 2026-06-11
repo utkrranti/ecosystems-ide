@@ -1,0 +1,138 @@
+{
+	"version": 1,
+	"updated": "2026-06-02",
+	"stacks": [
+		{
+			"id": "nextjs",
+			"name": "Next.js (App Router)",
+			"aliases": ["next.js", "next", "nextjs"],
+			"detect": { "files": ["next.config.ts", "next.config.js", "next.config.mjs"], "packageDeps": ["next"] },
+			"scaffoldCommand": "npx create-next-app@latest . --yes --typescript --tailwind --eslint --app --use-npm",
+			"postScaffold": ["npm install"],
+			"devServer": { "command": "npm run dev", "background": true },
+			"forbiddenWhenExists": ["create-next-app"],
+			"folderStructure": "app/ or src/app/, public/, package.json, next.config.* — use CLI; do not hand-write the full tree.",
+			"pitfalls": ["Vite/Next: after background dev server, use read_terminal_output for PostCSS errors.", "Tailwind v4 with PostCSS: use '@tailwindcss/postcss' in postcss.config — never bare tailwindcss: {} as the only plugin."]
+		},
+		{
+			"id": "vite-react",
+			"name": "React + Vite (TypeScript)",
+			"aliases": ["vite", "react vite", "vite react"],
+			"detect": { "files": ["vite.config.ts", "vite.config.js"], "packageDeps": ["vite"] },
+			"scaffoldCommand": "npm create vite@latest . -- --template react-ts",
+			"postScaffold": ["npm install"],
+			"devServer": { "command": "npm run dev", "background": true },
+			"forbiddenWhenExists": ["create vite", "npm create vite"],
+			"folderStructure": "src/, index.html, vite.config.ts — scaffold with npm create vite, then edit.",
+			"pitfalls": ["Run npm install after create before dev server."]
+		},
+		{
+			"id": "django",
+			"name": "Django",
+			"aliases": ["django", "python django"],
+			"detect": { "files": ["manage.py"], "packageDeps": [] },
+			"scaffoldCommand": "python -m venv .venv && .venv\\Scripts\\pip install django && .venv\\Scripts\\django-admin startproject config .",
+			"postScaffold": [],
+			"devServer": { "command": ".venv\\Scripts\\python manage.py runserver", "background": true },
+			"forbiddenWhenExists": ["django-admin startproject", "startproject"],
+			"folderStructure": "manage.py, config/settings.py, config/urls.py, apps/ — use django-admin startproject.",
+			"pitfalls": ["On macOS/Linux use source .venv/bin/activate and pip/django-admin without Scripts path.", "Prefer venv in project root."]
+		},
+		{
+			"id": "fastapi",
+			"name": "FastAPI",
+			"aliases": ["fastapi", "fast api"],
+			"detect": { "packageDeps": ["fastapi"] },
+			"scaffoldCommand": "python -m venv .venv && .venv\\Scripts\\pip install fastapi uvicorn[standard]",
+			"postScaffold": [],
+			"devServer": { "command": ".venv\\Scripts\\uvicorn main:app --reload --host 127.0.0.1 --port 8000", "background": true },
+			"forbiddenWhenExists": [],
+			"folderStructure": "main.py or app/ package with FastAPI() instance — minimal files only after venv+pip.",
+			"pitfalls": ["Create main.py with app = FastAPI() if missing after pip install.", "Use uvicorn main:app --reload for dev."]
+		},
+		{
+			"id": "spring-boot",
+			"name": "Spring Boot (Java)",
+			"aliases": ["spring", "spring boot", "springboot"],
+			"detect": { "files": ["pom.xml", "build.gradle", "build.gradle.kts"], "packageDeps": [] },
+			"scaffoldCommand": "curl -fsSL https://start.spring.io/starter.zip -d type=maven-project -d language=java -d bootVersion=3.4.0 -d baseDir=. -d groupId=com.example -d artifactId=app -d name=app -d packageName=com.example.app -d dependencies=web -o spring.zip && tar -xf spring.zip 2>nul || powershell -Command \"Expand-Archive -Path spring.zip -DestinationPath . -Force\" && del spring.zip 2>nul",
+			"postScaffold": ["mvn -q -DskipTests package || ./mvnw -q -DskipTests package"],
+			"devServer": { "command": "mvn spring-boot:run", "background": true },
+			"forbiddenWhenExists": ["start.spring.io"],
+			"folderStructure": "src/main/java, pom.xml or build.gradle — generate via start.spring.io, not hand-written Maven tree.",
+			"pitfalls": ["On Windows prefer curl+Expand-Archive or mvn wrapper; verify Java 17+.", "Use ./mvnw if wrapper present."]
+		},
+		{
+			"id": "dotnet",
+			"name": ".NET",
+			"aliases": ["dotnet", "c#", "asp.net", "webapi"],
+			"detect": { "files": ["*.csproj"], "packageDeps": [] },
+			"scaffoldCommand": "dotnet new webapi -n App -o . --force",
+			"postScaffold": ["dotnet build"],
+			"devServer": { "command": "dotnet run", "background": true },
+			"forbiddenWhenExists": ["dotnet new webapi", "dotnet new console"],
+			"folderStructure": "Program.cs, App.csproj, Controllers/ — dotnet new only in empty folder.",
+			"pitfalls": []
+		},
+		{
+			"id": "go",
+			"name": "Go",
+			"aliases": ["golang", "go"],
+			"detect": { "files": ["go.mod"] },
+			"scaffoldCommand": "go mod init example.com/app",
+			"postScaffold": [],
+			"devServer": { "command": "go run .", "background": true },
+			"forbiddenWhenExists": ["go mod init"],
+			"folderStructure": "go.mod, main.go — go mod init then minimal main.go.",
+			"pitfalls": []
+		},
+		{
+			"id": "rust",
+			"name": "Rust",
+			"aliases": ["rust", "cargo"],
+			"detect": { "files": ["Cargo.toml"] },
+			"scaffoldCommand": "cargo init --name app",
+			"postScaffold": ["cargo build"],
+			"devServer": { "command": "cargo run", "background": false },
+			"forbiddenWhenExists": ["cargo init", "cargo new"],
+			"folderStructure": "Cargo.toml, src/main.rs — cargo init in empty dir.",
+			"pitfalls": []
+		},
+		{
+			"id": "laravel",
+			"name": "Laravel (PHP)",
+			"aliases": ["laravel", "php laravel"],
+			"detect": { "files": ["artisan"], "packageDeps": [] },
+			"scaffoldCommand": "composer create-project laravel/laravel .",
+			"postScaffold": ["php artisan key:generate"],
+			"devServer": { "command": "php artisan serve", "background": true },
+			"forbiddenWhenExists": ["create-project laravel"],
+			"folderStructure": "artisan, app/, routes/, .env — composer create-project only.",
+			"pitfalls": []
+		},
+		{
+			"id": "rails",
+			"name": "Ruby on Rails",
+			"aliases": ["rails", "ruby on rails"],
+			"detect": { "files": ["config/application.rb"], "packageDeps": [] },
+			"scaffoldCommand": "rails new . --force --skip-git",
+			"postScaffold": ["bundle install"],
+			"devServer": { "command": "bin/rails server", "background": true },
+			"forbiddenWhenExists": ["rails new"],
+			"folderStructure": "app/, config/, Gemfile — rails new in empty directory.",
+			"pitfalls": []
+		},
+		{
+			"id": "flutter",
+			"name": "Flutter",
+			"aliases": ["flutter", "dart flutter"],
+			"detect": { "files": ["pubspec.yaml"], "packageDeps": [] },
+			"scaffoldCommand": "flutter create . --project-name app",
+			"postScaffold": ["flutter pub get"],
+			"devServer": { "command": "flutter run -d chrome", "background": true },
+			"forbiddenWhenExists": ["flutter create"],
+			"folderStructure": "lib/main.dart, pubspec.yaml — flutter create only.",
+			"pitfalls": []
+		}
+	]
+}

@@ -1,6 +1,6 @@
 # Development Environment Setup
 
-How to clone, build, and run **EcoSystems IDE** from source on a developer machine.
+How to clone, build, and run **Altus IDE** from source on a developer machine.
 
 **Base:** Code-OSS fork (see [upstream-sync.md](../architecture/upstream-sync.md))  
 **Primary platform:** Windows 10/11  
@@ -109,8 +109,8 @@ Output directory: `out/` (VS Code convention).
 ### VS Code / Cursor (recommended)
 
 1. Open repo root in Cursor or VS Code
-2. **Run and Debug** → select **Launch EcoSystems IDE**
-3. A new window opens with `[Extension Development Host]` or product name **EcoSystems IDE**
+2. **Run and Debug** → select **Launch Altus IDE**
+3. A new window opens with `[Extension Development Host]` or product name **Altus IDE**
 
 If launch config is missing, add `.vscode/launch.json`:
 
@@ -119,7 +119,7 @@ If launch config is missing, add `.vscode/launch.json`:
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch EcoSystems IDE",
+      "name": "Launch Altus IDE",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -156,7 +156,7 @@ Pass a folder to open:
 
 ## 6. Configure AI (Development)
 
-1. Run **EcoSystems AI Gateway** locally (or use team dev environment)
+1. Run **Altus AI Gateway** locally (or use team dev environment)
 2. Set `ecosystems.ai.gateway.baseUrl` → `http://localhost:8080/v1` (if not default)
 3. **Sign in** to EcoSystems in the IDE (dev account)
 4. Set chat model: `gpt-4o-mini` (default)
@@ -174,7 +174,7 @@ Dev builds use a separate data directory to avoid conflicting with VS Code:
 
 | | Path (Windows) |
 |---|----------------|
-| EcoSystems IDE dev | `%APPDATA%\ecosystems-ide-dev\User` |
+| Altus IDE dev | `%APPDATA%\ecosystems-ide-dev\User` |
 | Production (after install) | `%APPDATA%\ecosystems-ide\User` |
 
 Set via `--user-data-dir` in launch config if needed.
@@ -201,7 +201,7 @@ After setup, confirm:
 - [ ] Explorer opens a folder
 - [ ] Integrated terminal runs `echo hello`
 - [ ] TypeScript LSP shows diagnostics in a `.ts` file
-- [ ] Settings → EcoSystems AI section visible (after AI code lands)
+- [ ] Settings → Altus AI section visible (after AI code lands)
 
 Record validation date and engineer name in `docs/program/sign-off.md` item A15.
 
@@ -213,7 +213,7 @@ Record validation date and engineer name in `docs/program/sign-off.md` item A15.
 |---------|--------|
 | White screen on launch | Check `out/` exists; re-run `yarn compile` |
 | `yarn watch` CPU high | Normal during first compile; wait for "Finished compilation" |
-| Port in use | Kill orphaned Electron: Task Manager → *EcoSystems IDE* |
+| Port in use | Kill orphaned Electron: Task Manager → *Altus IDE* |
 | Wrong product name | Re-run branding script; check `product.json` |
 
 See [build.md](./build.md) for compile targets and CI parity.

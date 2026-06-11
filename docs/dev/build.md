@@ -1,6 +1,6 @@
 # Build & Compile Guide
 
-Build targets, commands, and packaging for EcoSystems IDE.
+Build targets, commands, and packaging for Altus IDE.
 
 **Last updated:** 2026-05-30
 
@@ -8,7 +8,7 @@ Build targets, commands, and packaging for EcoSystems IDE.
 
 ## 1. Build Overview
 
-EcoSystems IDE inherits the **Code-OSS gulp + yarn** pipeline:
+Altus IDE inherits the **Code-OSS gulp + yarn** pipeline:
 
 ```
 source (src/) → compile (out/) → bundle → electron → installer
@@ -55,7 +55,7 @@ Inherited from upstream; common gulp targets:
 | `watch-client` | Watch main sources |
 | `watch-extensions` | Watch extensions |
 
-EcoSystems AI code lives under:
+Altus AI code lives under:
 
 ```
 src/vs/platform/ecosystems/
@@ -80,26 +80,33 @@ extensions/                → extensions/*/out/
 
 ## 5. Packaging (Windows)
 
-Phase 0 goal: installable Windows artifact.
-
-### Option A — Inherited VS Code packaging
+### One command — EXE + MSI
 
 ```powershell
-yarn gulp vscode-win32-x64-min
+.\scripts\build-installers.ps1
 ```
 
-Output under `.build/` or `../VSCode-win32-x64/` (depends on upstream script version).
+| Output | Location |
+|--------|----------|
+| System EXE (per-machine) | `dist\win32-x64\AltusIDESetup-x64-{version}.exe` |
+| User EXE (per-user) | `dist\win32-x64\AltusIDEUserSetup-x64-{version}.exe` |
+| MSI (per-machine) | `dist\win32-x64\AltusIDE-x64-{version}.msi` |
 
-### Option B — electron-builder (custom wrapper)
+**Prerequisites:** Node 20+, repo dependencies (`yarn`), ~16 GB RAM. **MSI** additionally requires [WiX Toolset v3.11+](https://wixtoolset.org/) (`winget install WiXToolset.WiXToolset`).
 
-If using `electron-builder` (see Phase 0 backlog E5-05):
+Options:
 
 ```powershell
-yarn gulp vscode-win32-x64-min
-yarn electron-builder --win --x64
+.\scripts\build-installers.ps1 -ExeOnly          # Inno Setup only
+.\scripts\build-installers.ps1 -MsiOnly          # MSI only (needs packaged app)
+.\scripts\build-installers.ps1 -SkipPackage      # Reuse ../VSCode-win32-x64
 ```
 
-Document final chosen path in `docs/dev/ci-cd.md` when CI is defined.
+First run packages the app (`gulp vscode-win32-x64-min`) — typically **15–40 minutes**.
+
+Packaged app (uninstaller input) lives at `../VSCode-win32-x64/` relative to the IDE repo.
+
+**macOS (.dmg), Linux (.deb / .tar.gz):** see [installers.md](./installers.md). Those cannot be built natively on Windows except Linux via WSL2 or GitHub Actions.
 
 ---
 

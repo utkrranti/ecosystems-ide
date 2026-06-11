@@ -1,6 +1,6 @@
 # AI Context Pipeline Specification
 
-How EcoSystems IDE gathers, ranks, truncates, and assembles context before LLM requests.
+How Altus IDE gathers, ranks, truncates, and assembles context before LLM requests.
 
 **Phase coverage:** Phase 0 (minimal) → Phase 1 (full)  
 **Last updated:** 2026-05-30
@@ -153,7 +153,7 @@ Complete at cursor:
 ### Chat (Phase 0)
 
 ```
-System: You are EcoSystems IDE assistant. Help with code questions.
+System: You are Altus IDE assistant. Help with code questions.
 Answer concisely. Use markdown for code blocks.
 
 {{#if attachedFile}}

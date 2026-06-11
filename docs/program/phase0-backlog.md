@@ -1,6 +1,6 @@
 # Phase 0 Sprint Backlog
 
-Actionable work items for **EcoSystems IDE Phase 0** (Foundation).
+Actionable work items for **Altus IDE Phase 0** (Foundation).
 
 **Duration:** 5–6 weeks  
 **PRD:** [PRD-v1-phase0.md](../product/PRD-v1-phase0.md)  
@@ -30,7 +30,7 @@ Actionable work items for **EcoSystems IDE Phase 0** (Foundation).
 | E1-04 | EcoSystems contribution scaffold | `contrib/ecosystems/` empty registration | 0.5d | ☐ |
 | E1-05 | Git repo + branch strategy | `main`, `develop`, PR template | 0.5d | ☐ |
 
-**E1 exit:** App launches as EcoSystems IDE; explorer + terminal work.
+**E1 exit:** App launches as Altus IDE; explorer + terminal work.
 
 ---
 
@@ -41,7 +41,7 @@ Actionable work items for **EcoSystems IDE Phase 0** (Foundation).
 | E2-01 | Service registration | DI: `IAiService`, `IModelRouterService`, `ISecretsService` | 1d | ☐ |
 | E2-02 | Session keychain | Store EcoSystems session/refresh token; sign-in/out | 1d | ☐ |
 | E2-03 | Settings schema | Register `ecosystems.ai.*` (gateway, models; no BYOK) | 0.5d | ☐ |
-| E2-04 | Gateway provider | Stream chat + inline to EcoSystems AI Gateway | 2d | ☐ |
+| E2-04 | Gateway provider | Stream chat + inline to Altus AI Gateway | 2d | ☐ |
 | E2-05 | Model router | Route by feature; kill switch; connection test | 1d | ☐ |
 | E2-06 | Context builder (Phase 0) | Cursor region + file attach + templates | 1.5d | ☐ |
 | E2-07 | Gateway service (dev) | Local `localhost:8080` API + mock/plan tiers | 2d | ☐ |

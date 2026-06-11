@@ -1,6 +1,6 @@
 # Tech Stack
 
-Complete technology choices for EcoSystems IDE — a VS Code–class desktop editor with built-in AI.
+Complete technology choices for Altus IDE — a VS Code–class desktop editor with built-in AI.
 
 ---
 
@@ -197,7 +197,7 @@ Launch with a **curated allowlist**; expand marketplace compatibility deliberate
 
 ## Inherited vs Built
 
-| Inherited from Code-OSS (~80%) | Built by EcoSystems (~20%) |
+| Inherited from Code-OSS (~80%) | Built by Altus AI (~20%) |
 |--------------------------------|----------------------------|
 | Electron shell | Context engine |
 | Monaco editor | Model router |

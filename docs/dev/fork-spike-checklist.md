@@ -1,6 +1,6 @@
 # Fork Spike Validation Checklist
 
-One-time validation that Code-OSS builds as **EcoSystems IDE** on a developer machine.
+One-time validation that Code-OSS builds as **Altus IDE** on a developer machine.
 
 **Gate:** [sign-off.md](../program/sign-off.md) item **A15**  
 **Duration:** 1–3 days  
@@ -29,7 +29,7 @@ Complete [setup.md](./setup.md) prerequisites (Node 20, Python, VS Build Tools, 
 | 3 | `yarn` completes without error | ☐ |
 | 4 | `yarn compile` completes without error | ☐ |
 | 5 | App launches via `scripts/code.bat` | ☐ |
-| 6 | Window title shows **EcoSystems IDE** | ☐ |
+| 6 | Window title shows **Altus IDE** | ☐ |
 | 7 | Open folder → explorer lists files | ☐ |
 | 8 | Integrated terminal runs command | ☐ |
 | 9 | TypeScript file shows LSP diagnostics | ☐ |

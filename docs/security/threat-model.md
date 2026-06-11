@@ -1,6 +1,6 @@
 # Threat Model
 
-**Product:** EcoSystems IDE  
+**Product:** Altus IDE  
 **Scope:** Phase 0 (desktop client, cloud LLM via user API key)  
 **Method:** STRIDE-lite + assets/threats/mitigations  
 **Last updated:** 2026-05-30  

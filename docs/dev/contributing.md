@@ -1,6 +1,6 @@
 # Contributing & Branch Strategy
 
-Git workflow, branches, and PR rules for EcoSystems IDE.
+Git workflow, branches, and PR rules for Altus IDE.
 
 **Last updated:** 2026-05-30
 

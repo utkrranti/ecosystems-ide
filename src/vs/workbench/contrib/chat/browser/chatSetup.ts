@@ -407,6 +407,10 @@ class ChatSetupRequests extends Disposable {
 	}
 
 	private async resolve(): Promise<void> {
+		if (!defaultChat.providerId?.trim()) {
+			return;
+		}
+
 		this.pendingResolveCts.dispose(true);
 		const cts = this.pendingResolveCts = new CancellationTokenSource();
 
@@ -438,6 +442,10 @@ class ChatSetupRequests extends Disposable {
 	}
 
 	private async findMatchingProviderSession(token: CancellationToken): Promise<AuthenticationSession | undefined> {
+		if (!defaultChat.providerId?.trim()) {
+			return undefined;
+		}
+
 		const sessions = await this.authenticationService.getSessions(defaultChat.providerId);
 		if (token.isCancellationRequested) {
 			return undefined;
@@ -577,6 +585,10 @@ class ChatSetupRequests extends Disposable {
 	}
 
 	async forceResolveEntitlement(session: AuthenticationSession | undefined): Promise<ChatEntitlement | undefined> {
+		if (!defaultChat.providerId?.trim()) {
+			return undefined;
+		}
+
 		if (!session) {
 			session = await this.findMatchingProviderSession(CancellationToken.None);
 		}
@@ -787,6 +799,10 @@ class ChatSetupController extends Disposable {
 			}
 
 			if (!session) {
+				if (!defaultChat.providerId?.trim()) {
+					return;
+				}
+
 				session = (await this.authenticationService.getSessions(defaultChat.providerId)).at(0);
 				if (!session) {
 					return; // unexpected

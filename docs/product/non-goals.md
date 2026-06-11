@@ -1,6 +1,6 @@
 # Non-Goals & Out-of-Scope Register
 
-Living document of what EcoSystems IDE **will not** do (or not yet). Prevents scope creep during implementation.
+Living document of what Altus IDE **will not** do (or not yet). Prevents scope creep during implementation.
 
 **Last updated:** 2026-05-30
 
@@ -43,7 +43,7 @@ Living document of what EcoSystems IDE **will not** do (or not yet). Prevents sc
 | NG-011 | Telemetry / product analytics | Phase 1 (opt-in) |
 | NG-012 | macOS/Linux signed installers | Phase 1 |
 | NG-013 | Custom themes beyond default + dark/light | Phase 1 |
-| NG-014 | User BYOK / paste provider API keys | Inbuilt via EcoSystems Gateway only (ADR-011) |
+| NG-014 | User BYOK / paste provider API keys | Inbuilt via Altus AI Gateway only (ADR-011) |
 
 ---
 

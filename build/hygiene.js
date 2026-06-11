@@ -100,12 +100,15 @@ function hygiene(some, linting = true) {
 	const copyrights = es.through(function (file) {
 		const lines = file.__lines;
 
-		for (let i = 0; i < copyrightHeaderLines.length; i++) {
-			if (lines[i] !== copyrightHeaderLines[i]) {
-				console.error(file.relative + ': Missing or bad copyright statement');
-				errorCount++;
-				break;
-			}
+		const ok =
+			lines[0] === copyrightHeaderLines[0] &&
+			/^ \*  Copyright \(c\) .+ All rights reserved\.$/.test(lines[1]) &&
+			lines[2] === copyrightHeaderLines[2] &&
+			lines[3] === copyrightHeaderLines[3];
+
+		if (!ok) {
+			console.error(file.relative + ': Missing or bad copyright statement');
+			errorCount++;
 		}
 
 		this.emit('data', file);

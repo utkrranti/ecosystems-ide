@@ -8,8 +8,7 @@ pushd %~dp0..
 :: Get electron, compile, built-in extensions
 if "%VSCODE_SKIP_PRELAUNCH%"=="" node build/lib/preLaunch.js
 
-for /f "delims=" %%a in ('node -p "require('./product.json').nameShort + '.exe'"') do set NAMESHORT=%%a
-set CODE=".build\electron\%NAMESHORT%"
+for /f "usebackq delims=" %%a in (`node "%~dp0resolve-electron-exe.js"`) do set "CODE_EXE=%%a"
 
 :: Manage built-in extensions
 if "%~1"=="--builtin" goto builtin
@@ -22,11 +21,11 @@ set ELECTRON_ENABLE_LOGGING=1
 set ELECTRON_ENABLE_STACK_DUMPING=1
 
 :: Launch Code
-%CODE% --inspect=5874 out\cli.js %~dp0.. %*
+call "%CODE_EXE%" --inspect=5874 out\cli.js %~dp0.. %*
 goto end
 
 :builtin
-%CODE% build/builtin
+call "%CODE_EXE%" build/builtin
 
 :end
 

@@ -31,6 +31,10 @@ gulp.task(transpileClientTask);
 const compileClientTask = task.define('compile-client', task.series(util.rimraf('out'), compileApiProposalNamesTask, compileTask('src', 'out', false)));
 gulp.task(compileClientTask);
 
+/** Dev compile without deleting `out/` -- avoids Windows EPERM on locked test __snapshots__. */
+const compileClientDevTask = task.define('compile-client-dev', task.series(compileApiProposalNamesTask, compileTask('src', 'out', false)));
+gulp.task(compileClientDevTask);
+
 const watchClientTask = task.define('watch-client', task.series(util.rimraf('out'), task.parallel(watchTask('out', false), watchApiProposalNamesTask)));
 gulp.task(watchClientTask);
 

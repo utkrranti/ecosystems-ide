@@ -1,0 +1,41 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) EcoSystems contributors. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench .part.titlebar .altus-update-pill {
+	-webkit-app-region: no-drag;
+	appearance: none;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	background: rgba(255, 255, 255, 0.06);
+	color: var(--vscode-titleBar-activeForeground);
+	border-radius: 999px;
+	padding: 2px 10px;
+	margin: 0 8px 0 0;
+	font-size: 11px;
+	line-height: 16px;
+	height: 22px;
+	cursor: default;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.monaco-workbench .part.titlebar .altus-update-pill.is-clickable {
+	cursor: pointer;
+}
+
+.monaco-workbench .part.titlebar .altus-update-pill.is-clickable:hover {
+	background: rgba(124, 92, 255, 0.18);
+	border-color: rgba(124, 92, 255, 0.45);
+	color: #e8e0ff;
+}
+
+.monaco-workbench .part.titlebar .altus-update-pill.is-ready {
+	background: rgba(124, 92, 255, 0.22);
+	border-color: rgba(124, 92, 255, 0.55);
+	color: #f3efff;
+}
+
+.monaco-workbench .part.titlebar .altus-update-pill.is-busy {
+	opacity: 0.85;
+}

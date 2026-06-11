@@ -1,6 +1,6 @@
 # Code-OSS Fork & Upstream Sync Procedure
 
-How to create the initial fork and keep EcoSystems IDE aligned with [microsoft/vscode](https://github.com/microsoft/vscode) (Code-OSS).
+How to create the initial fork and keep Altus IDE aligned with [microsoft/vscode](https://github.com/microsoft/vscode) (Code-OSS).
 
 **Last updated:** 2026-05-30
 
@@ -46,7 +46,7 @@ yarn watch   # first compile ~15-25 min
 - Update `LICENSE.txt` with third-party notices (do not remove MIT attribution)
 - Add `src/vs/workbench/contrib/ecosystems/` scaffold (empty contribution)
 
-**Checkpoint:** App launches as "EcoSystems IDE" with no AI — commit as `chore: initial Code-OSS fork at 1.96.2`.
+**Checkpoint:** App launches as "Altus IDE" with no AI — commit as `chore: initial Code-OSS fork at 1.96.2`.
 
 ---
 
@@ -179,7 +179,7 @@ Document in `docs/architecture/upstream-patches.md`:
 
 ## 9. Version Mapping
 
-| EcoSystems IDE | Code-OSS base | Notes |
+| Altus IDE | Code-OSS base | Notes |
 |--------------|---------------|-------|
 | 0.1.0 | 1.96.x | Phase 0 start |
 | 0.2.0 | 1.97.x | Phase 1 target |

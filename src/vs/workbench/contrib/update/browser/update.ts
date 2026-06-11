@@ -204,6 +204,10 @@ export class UpdateContribution extends Disposable implements IWorkbenchContribu
 		this.registerGlobalActivityActions();
 	}
 
+	private shouldShowToastNotifications(): boolean {
+		return this.configurationService.getValue<boolean>('update.showToastNotifications');
+	}
+
 	private async onUpdateStateChange(state: UpdateState): Promise<void> {
 		this.updateStateContextKey.set(state.type);
 
@@ -256,6 +260,12 @@ export class UpdateContribution extends Disposable implements IWorkbenchContribu
 		let badge: IBadge | undefined = undefined;
 		let priority: number | undefined = undefined;
 
+		if (!this.shouldShowToastNotifications()) {
+			this.badgeDisposable.clear();
+			this.state = state;
+			return;
+		}
+
 		if (state.type === StateType.AvailableForDownload || state.type === StateType.Downloaded || state.type === StateType.Ready) {
 			badge = new NumberBadge(1, () => nls.localize('updateIsReady', "New {0} update available.", this.productService.nameShort));
 		} else if (state.type === StateType.CheckingForUpdates) {
@@ -298,7 +308,7 @@ export class UpdateContribution extends Disposable implements IWorkbenchContribu
 
 	// linux
 	private onUpdateAvailable(update: IUpdate): void {
-		if (!this.shouldShowNotification()) {
+		if (!this.shouldShowToastNotifications() || !this.shouldShowNotification()) {
 			return;
 		}
 
@@ -327,6 +337,9 @@ export class UpdateContribution extends Disposable implements IWorkbenchContribu
 
 	// windows fast updates
 	private onUpdateDownloaded(update: IUpdate): void {
+		if (!this.shouldShowToastNotifications()) {
+			return;
+		}
 		if (isMacintosh) {
 			return;
 		}
@@ -363,6 +376,9 @@ export class UpdateContribution extends Disposable implements IWorkbenchContribu
 
 	// windows and mac
 	private onUpdateReady(update: IUpdate): void {
+		if (!this.shouldShowToastNotifications()) {
+			return;
+		}
 		if (!(isWindows && this.productService.target !== 'user') && !this.shouldShowNotification()) {
 			return;
 		}

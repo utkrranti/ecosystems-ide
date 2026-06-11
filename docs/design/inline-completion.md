@@ -8,7 +8,7 @@ Ghost-text AI completions in the Monaco editor (Phase 0).
 
 ## 1. Overview
 
-As the user types, EcoSystems IDE shows **gray ghost text** ahead of the cursor suggesting the next tokens. Matches Copilot/Cursor muscle memory.
+As the user types, Altus IDE shows **gray ghost text** ahead of the cursor suggesting the next tokens. Matches Copilot/Cursor muscle memory.
 
 **API:** Monaco `InlineCompletionsProvider`  
 **Service:** `src/vs/platform/ecosystems/ai/inline/`

@@ -1,6 +1,6 @@
 # Prompt Templates Catalog
 
-Canonical prompt templates for EcoSystems IDE AI features.
+Canonical prompt templates for Altus IDE AI features.
 
 **Source of truth in code:** `src/vs/platform/ecosystems/ai/context/templates/`  
 **Last updated:** 2026-05-30
@@ -36,7 +36,7 @@ Templates are versioned with the app; changes require QA on golden prompts.
 **Model role:** Single user message (chat completions API)
 
 ```
-You are a code completion assistant for EcoSystems IDE.
+You are a code completion assistant for Altus IDE.
 Output ONLY the text that should be inserted at the cursor.
 Do not repeat existing code. Do not use markdown fences.
 Do not explain.
@@ -71,7 +71,7 @@ Insert at cursor:
 ## 4. `chat-system-v1` — Chat System Prompt
 
 ```
-You are EcoSystems IDE assistant — an expert programming helper embedded in a VS Code-class editor.
+You are Altus IDE assistant — an expert programming helper embedded in a VS Code-class editor.
 
 Rules:
 - Be concise and accurate.

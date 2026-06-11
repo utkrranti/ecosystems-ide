@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) EcoSystems contributors. All rights reserved.
- *  Licensed under the MIT License.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
 import { Emitter, Event } from '../../../base/common/event.js';
@@ -18,7 +18,7 @@ export interface IEcosystemsApiKeys {
 }
 
 /**
- * Default implementation: holds an in-memory map of provider → key.
+ * Default implementation: holds an in-memory map of provider -> key.
  * Platform-specific implementations (e.g. electron-sandbox) populate it from
  * shell environment variables on startup.
  */

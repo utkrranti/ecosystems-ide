@@ -1,6 +1,6 @@
 # Workbench Information Architecture & Wireframes
 
-Layout and navigation for EcoSystems IDE Phase 0 — VS Code parity plus AI sidebar.
+Layout and navigation for Altus IDE Phase 0 — VS Code parity plus AI sidebar.
 
 **Last updated:** 2026-05-30
 
@@ -115,18 +115,18 @@ When AI disabled: `$(circle-slash) AI off`
 
 | Command | ID |
 |---------|-----|
-| EcoSystems AI: Open Chat | `ecosystems.ai.openChat` |
-| EcoSystems AI: Focus Chat Input | `ecosystems.ai.focusChat` |
-| EcoSystems AI: Toggle Inline Completions | `ecosystems.ai.toggleInline` |
-| EcoSystems AI: Open Settings | `workbench.action.openSettings` → `@ecosystems.ai` |
+| Altus AI: Open Chat | `ecosystems.ai.openChat` |
+| Altus AI: Focus Chat Input | `ecosystems.ai.focusChat` |
+| Altus AI: Toggle Inline Completions | `ecosystems.ai.toggleInline` |
+| Altus AI: Open Settings | `workbench.action.openSettings` → `@ecosystems.ai` |
 
 ---
 
 ## 9. Settings Location
 
-**File → Preferences → Settings** → search `ecosystems ai`
+**File → Preferences → Settings** → search `Altus AI`
 
-Dedicated settings section with icon in tree: **EcoSystems AI**
+Dedicated settings section with icon in tree: **Altus AI**
 
 ---
 

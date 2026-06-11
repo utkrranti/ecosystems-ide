@@ -1,6 +1,6 @@
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) EcoSystems contributors. All rights reserved.
- *  Licensed under the MIT License.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
 export type AiFeature = 'inline' | 'chat' | 'agent';
@@ -25,9 +25,18 @@ export interface ChatToolCall {
 	args: Record<string, unknown>;
 }
 
+export interface ChatMessageImage {
+	mimeType: string;
+	data: Uint8Array;
+}
+
 export interface ChatMessage {
 	role: 'system' | 'user' | 'assistant' | 'tool';
 	content: string;
+	/** user-only: plain text shown in the UI (wire `content` may include attachment preamble) */
+	displayContent?: string;
+	/** user-only: images sent as vision content parts (OpenAI-compatible) */
+	images?: ChatMessageImage[];
 	/** assistant-only: tool calls the model wants to invoke */
 	toolCalls?: ChatToolCall[];
 	/** tool-only: id of the call this is a response to */

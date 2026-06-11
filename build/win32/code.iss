@@ -8,14 +8,18 @@
 AppId={#AppId}
 AppName={#NameLong}
 AppVerName={#NameVersion}
-AppPublisher=Microsoft Corporation
-AppPublisherURL=https://code.visualstudio.com/
-AppSupportURL=https://code.visualstudio.com/
-AppUpdatesURL=https://code.visualstudio.com/
+AppPublisher=Altus
+AppPublisherURL=https://altuside.com/
+AppSupportURL=https://altuside.com/
+AppUpdatesURL=https://altuside.com/
 DefaultGroupName={#NameLong}
 AllowNoIcons=yes
 OutputDir={#OutputDir}
-OutputBaseFilename=VSCodeSetup
+#if "user" == InstallTarget
+OutputBaseFilename=AltusIDEUserSetup
+#else
+OutputBaseFilename=AltusIDESetup
+#endif
 Compression=lzma
 SolidCompression=yes
 AppMutex={code:GetAppMutex}

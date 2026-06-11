@@ -44,7 +44,8 @@ export enum ThemeSettings {
 }
 
 export enum ThemeSettingDefaults {
-	COLOR_THEME_DARK = 'Default Dark Modern',
+	/** Altus IDE default dark theme (see extensions/ecosystems-theme). */
+	COLOR_THEME_DARK = 'Altus Dark',
 	COLOR_THEME_LIGHT = 'Default Light Modern',
 	COLOR_THEME_HC_DARK = 'Default High Contrast',
 	COLOR_THEME_HC_LIGHT = 'Default High Contrast Light',
@@ -57,16 +58,16 @@ export enum ThemeSettingDefaults {
 }
 
 export const COLOR_THEME_DARK_INITIAL_COLORS = {
-	'activityBar.activeBorder': '#0078d4',
-	'activityBar.background': '#181818',
-	'activityBar.border': '#2b2b2b',
+	'activityBar.activeBorder': '#7c5cff',
+	'activityBar.background': '#000000',
+	'activityBar.border': '#1a1a1a',
 	'activityBar.foreground': '#d7d7d7',
 	'activityBar.inactiveForeground': '#868686',
 	'editorGroup.border': '#ffffff17',
-	'editorGroupHeader.tabsBackground': '#181818',
-	'editorGroupHeader.tabsBorder': '#2b2b2b',
-	'statusBar.background': '#181818',
-	'statusBar.border': '#2b2b2b',
+	'editorGroupHeader.tabsBackground': '#000000',
+	'editorGroupHeader.tabsBorder': '#1a1a1a',
+	'statusBar.background': '#0a0a0a',
+	'statusBar.border': '#1a1a1a',
 	'statusBar.foreground': '#cccccc',
 	'statusBar.noFolderBackground': '#1f1f1f',
 	'tab.activeBackground': '#1f1f1f',

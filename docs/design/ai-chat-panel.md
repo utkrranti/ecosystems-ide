@@ -1,6 +1,6 @@
 # AI Chat Panel UX Specification
 
-Sidebar chat for EcoSystems IDE Phase 0.
+Sidebar chat for Altus IDE Phase 0.
 
 **Implementation:** Webview in `src/vs/platform/ecosystems/browser/`  
 **Last updated:** 2026-05-30
@@ -19,7 +19,7 @@ Single-column chat in the **sidebar** when user selects the AI activity bar icon
 
 ```
 ┌─────────────────────────────┐
-│  EcoSystems AI          [⚙] │  ← header: title + settings gear
+│  Altus AI          [⚙] │  ← header: title + settings gear
 ├─────────────────────────────┤
 │                             │
 │  ┌─────────────────────┐    │
@@ -51,7 +51,7 @@ Single-column chat in the **sidebar** when user selects the AI activity bar icon
 
 | Element | Behavior |
 |---------|----------|
-| Title | "EcoSystems AI" |
+| Title | "Altus AI" |
 | Settings (⚙) | Opens Settings filtered to `@ecosystems.ai` |
 | No model dropdown in header Phase 0 | Model in settings only |
 

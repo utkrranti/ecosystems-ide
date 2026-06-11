@@ -1,6 +1,6 @@
 # CI/CD Pipeline Design
 
-Continuous integration and delivery for EcoSystems IDE.
+Continuous integration and delivery for Altus IDE.
 
 **Phase:** 0  
 **Platform:** GitHub Actions  
@@ -17,7 +17,7 @@ Continuous integration and delivery for EcoSystems IDE.
 | E2E smoke (mock AI) | ✅ |
 | Windows package artifact | ✅ (manual or workflow dispatch) |
 | Code signing | ❌ Phase 1 |
-| Auto-publish to users | ❌ Phase 1 |
+| Auto-publish to users | ✅ via **Publish IDE update** workflow |
 
 ---
 
@@ -43,10 +43,13 @@ Continuous integration and delivery for EcoSystems IDE.
 |----------|---------|--------|---------|
 | `ci.yml` | PR → `develop`, push `develop` | `windows-latest` | Compile + test |
 | `ci-linux.yml` | PR (optional) | `ubuntu-latest` | Compile smoke |
-| `release.yml` | Tag `v*` on `main` | `windows-latest` | Build installer |
+| `release-installers.yml` | Manual | matrix | Build installer artifacts |
+| `publish-update.yml` | Manual | `ubuntu-latest` | Publish installer + patch `UPDATE_*` on VPS |
 | `docs.yml` | PR touching `docs/**` only | `ubuntu-latest` | Markdown link check (optional) |
 
 Phase 0: **`ci.yml` required**; others optional.
+
+**GitHub Environments:** production / staging variables and secrets for deploy — see [github-environments.md](./github-environments.md). Local dev does not use GitHub; `ide_apis` uses `.env.local`.
 
 ---
 

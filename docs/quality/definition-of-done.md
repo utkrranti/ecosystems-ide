@@ -1,6 +1,6 @@
 # Definition of Done
 
-When a story, epic, or phase is **complete** for EcoSystems IDE.
+When a story, epic, or phase is **complete** for Altus IDE.
 
 **Last updated:** 2026-05-30
 
@@ -34,7 +34,7 @@ When a story, epic, or phase is **complete** for EcoSystems IDE.
 ## 3. Epic Exit Criteria
 
 ### E1 — Fork & Build
-- App launches as EcoSystems IDE; explorer + terminal work
+- App launches as Altus IDE; explorer + terminal work
 - [setup.md](../dev/setup.md) validated by engineer
 
 ### E2 — Platform AI Services

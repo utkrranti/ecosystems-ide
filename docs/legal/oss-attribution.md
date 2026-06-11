@@ -1,6 +1,6 @@
 # OSS Licenses & Third-Party Attribution
 
-Legal requirements for EcoSystems IDE as a **Code-OSS (MIT) fork**.
+Legal requirements for Altus IDE as a **Code-OSS (MIT) fork**.
 
 **Last updated:** 2026-05-30  
 **Status:** Required before public distribution
@@ -9,7 +9,7 @@ Legal requirements for EcoSystems IDE as a **Code-OSS (MIT) fork**.
 
 ## 1. Summary
 
-EcoSystems IDE is built on **Visual Studio Code — Open Source (Code-OSS)**, licensed under the **MIT License** by Microsoft and contributors.
+Altus IDE is built on **Visual Studio Code — Open Source (Code-OSS)**, licensed under the **MIT License** by Microsoft and contributors.
 
 We must:
 
@@ -22,7 +22,7 @@ We must:
 
 ## 2. Primary License
 
-### Code-OSS / EcoSystems IDE core
+### Code-OSS / Altus IDE core
 
 | Item | Value |
 |------|-------|
@@ -57,7 +57,7 @@ Place MIT header on new source files (match upstream VS Code file header style).
 2. **Section 2:** EcoSystems modifications notice:
 
 ```
-EcoSystems IDE is a fork of Visual Studio Code - Open Source ("Code-OSS").
+Altus IDE is a fork of Visual Studio Code - Open Source ("Code-OSS").
 Modifications copyright (c) 2026 EcoSystems contributors.
 Licensed under the MIT License.
 ```
@@ -76,7 +76,7 @@ On upstream sync:
 2. Append EcoSystems-specific additions (if any new deps):
 
 ```
-EcoSystems IDE Additional Components
+Altus IDE Additional Components
 ------------------------------------
 keytar - MIT - https://github.com/atom/node-keytar
 ```
@@ -115,7 +115,7 @@ Every **installable build** must include:
 
 Verify in About dialog after fork:
 
-**Help → About EcoSystems IDE → (third party link)**
+**Help → About Altus IDE → (third party link)**
 
 ---
 

@@ -1,6 +1,6 @@
 # Secrets & API Key Handling
 
-How EcoSystems IDE stores, accesses, and protects credentials.
+How Altus IDE stores, accesses, and protects credentials.
 
 **Last updated:** 2026-05-30
 

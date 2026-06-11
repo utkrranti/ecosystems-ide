@@ -1,0 +1,106 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) EcoSystems contributors. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* EcoSystems brand tokens -- override VS Code blues workbench-wide (dark) */
+.monaco-workbench.vs-dark,
+.monaco-workbench.vs-dark .gettingStartedContainer {
+	--ecosystems-accent-1: #7c5cff;
+	--ecosystems-accent-2: #19c8ff;
+	--ecosystems-accent-grad: linear-gradient(135deg, #7c5cff 0%, #19c8ff 100%);
+	--vscode-textLink-foreground: #a78bff;
+	--vscode-textLink-activeForeground: #19c8ff;
+	--vscode-focusBorder: #7c5cff;
+	--vscode-button-background: #7c5cff;
+	--vscode-button-hoverBackground: #6a4aeb;
+	--vscode-progressBar-background: #7c5cff;
+	--vscode-activityBar-activeBorder: #7c5cff;
+	--vscode-activityBarBadge-background: #7c5cff;
+	--vscode-tab-activeBorderTop: #7c5cff;
+	--vscode-interactive-activeCodeBorder: #7c5cff;
+	--vscode-welcomePage-progress-foreground: #7c5cff;
+	--vscode-editor-background: #000000;
+	--vscode-sideBar-background: #000000;
+	--vscode-panel-background: #000000;
+	--vscode-activityBar-background: #000000;
+	--vscode-titleBar-activeBackground: #000000;
+	--vscode-statusBar-background: #0a0a0a;
+	--vscode-welcomePage-background: #000000;
+	--vscode-welcomePage-tileBackground: #0a0a0a;
+}
+
+/* Welcome title gradient -- applied on inner spans (avoids h1 line-height / overflow clipping) */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .ecosystems-welcome-title-text {
+	display: inline-block;
+	line-height: 1.2;
+	padding-bottom: 0.05em;
+	background: linear-gradient(135deg, #7c5cff 0%, #19c8ff 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .ecosystems-welcome-subtitle-text {
+	display: inline-block;
+	line-height: 1.2;
+	padding-bottom: 0.05em;
+	background: linear-gradient(90deg, #c4b5fd 0%, #19c8ff 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+/* Start section: icons + links */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container .codicon,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container .codicon::before {
+	color: #7c5cff !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container .button-link,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container a,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container span {
+	color: #a78bff !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container .button-link:hover,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .start-container a:hover {
+	color: #19c8ff !important;
+}
+
+/* Walkthrough list */
+.monaco-workbench .part.editor > .content .gettingStartedContainer a:not(.hide-category-button),
+.monaco-workbench .part.editor > .content .gettingStartedContainer .button-link,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .icon-widget,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .codicon:not(.hide-category-button) {
+	color: #7c5cff !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer a:not(.hide-category-button):hover,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .button-link:hover {
+	color: #19c8ff !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlide .getting-started-category .featured {
+	border-top-color: #7c5cff !important;
+}
+
+/* Progress bars under walkthrough cards */
+.monaco-workbench .part.editor > .content .gettingStartedContainer .progress-bar-inner,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideCategories .progress-bar-inner {
+	background: linear-gradient(90deg, #7c5cff 0%, #19c8ff 100%) !important;
+	background-color: #7c5cff !important;
+}
+
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideDetails .getting-started-step .codicon-getting-started-step-checked,
+.monaco-workbench .part.editor > .content .gettingStartedContainer .gettingStartedSlideDetails .getting-started-step.expanded .codicon-getting-started-step-unchecked {
+	color: #7c5cff !important;
+}
+
+/* EcoSystems AI panel */
+.ecosystems-ai-chat,
+.ecosystems-ai-chat .ecosystems-ai-body {
+	background: #000000 !important;
+}

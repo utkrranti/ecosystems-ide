@@ -1,9 +1,9 @@
 # Model Router & Provider Interface
 
-Unified abstraction for LLM access in EcoSystems IDE.
+Unified abstraction for LLM access in Altus IDE.
 
 **Last updated:** 2026-05-31  
-**Auth model:** [ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway) — inbuilt via EcoSystems Gateway (no user BYOK)
+**Auth model:** [ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway) — inbuilt via Altus AI Gateway (no user BYOK)
 
 ---
 
@@ -28,7 +28,7 @@ IChatAiService   ──┼──► IModelRouterService ──► IEcosystemsGat
 IAgentService    ──┘         │
                              │  HTTPS + user session / license
                              ▼
-                    EcoSystems AI Gateway
+                    Altus AI Gateway
                              │
               ┌──────────────┼──────────────┐
               ▼              ▼              ▼
@@ -39,7 +39,7 @@ IAgentService    ──┘         │
 
 **Flow:**
 
-1. User signs in to EcoSystems (or holds a valid license).
+1. User signs in to Altus AI (or holds a valid license).
 2. IDE stores **session token** in OS keychain — not provider API keys.
 3. Model router sends chat/inline requests to the **gateway** with that token.
 4. Gateway validates plan, rate limits, picks upstream model, calls OpenAI/Anthropic with **server-side keys**.
@@ -120,7 +120,7 @@ interface AuthContext {
 
 ---
 
-## 5. EcoSystems Gateway Provider (Phase 0 default)
+## 5. Altus AI Gateway Provider (Phase 0 default)
 
 **Base URL (configurable):**
 
@@ -226,8 +226,8 @@ Success: 200, latency < 10s. Used by settings UI **Test connection** after sign-
 
 | Route | Phase | Notes |
 |-------|-------|-------|
-| EcoSystems Gateway → OpenAI | 0 | Default; inbuilt |
-| EcoSystems Gateway → Anthropic | 1 | Server-side adapter |
+| Altus AI Gateway → OpenAI | 0 | Default; inbuilt |
+| Altus AI Gateway → Anthropic | 1 | Server-side adapter |
 | Gateway → Ollama / local | 2 | Optional self-hosted gateway |
 | Enterprise BYOK | 3+ | Separate tier; not default consumer path |
 

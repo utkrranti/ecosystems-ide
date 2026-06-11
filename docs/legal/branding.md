@@ -1,6 +1,6 @@
 # Branding & Trademark Guidelines
 
-How to name, design, and market **EcoSystems IDE** without conflicting with **Visual Studio Code** or **Microsoft** trademarks.
+How to name, design, and market **Altus IDE** without conflicting with **Visual Studio Code** or **Microsoft** trademarks.
 
 **Last updated:** 2026-05-30
 
@@ -10,7 +10,7 @@ How to name, design, and market **EcoSystems IDE** without conflicting with **Vi
 
 | Field | Value |
 |-------|-------|
-| **Product name** | EcoSystems IDE |
+| **Product name** | Altus IDE |
 | **Short name** | EcoSystems |
 | **Application ID** | `ecosystems-ide` |
 | **Data folder** | `.ecosystems-ide` |
@@ -37,7 +37,7 @@ How to name, design, and market **EcoSystems IDE** without conflicting with **Vi
 
 **Required disclaimer** (website, README, About):
 
-> EcoSystems IDE is an independent product. It is not Microsoft Visual Studio Code, is not endorsed by Microsoft, and is not affiliated with Microsoft Corporation.
+> Altus IDE is an independent product. It is not Microsoft Visual Studio Code, is not endorsed by Microsoft, and is not affiliated with Microsoft Corporation.
 
 ---
 
@@ -64,8 +64,8 @@ resources/
 
 ```json
 {
-  "nameShort": "EcoSystems IDE",
-  "nameLong": "EcoSystems IDE",
+  "nameShort": "Altus IDE",
+  "nameLong": "Altus IDE",
   "applicationName": "ecosystems-ide",
   "dataFolderName": ".ecosystems-ide",
   "win32MutexName": "ecosystemside",
@@ -93,11 +93,11 @@ Without written permission, do **not** use in product name, domain, or logo:
 
 | Item | Phase 0 action |
 |------|----------------|
-| Register "EcoSystems IDE" | TBD — legal counsel |
+| Register "Altus IDE" | TBD — legal counsel |
 | Domain | TBD (e.g. `ecosystems.dev`) |
 | GitHub repo | `github.com/utkrranti/ecosystems-ide` |
 
-Until registered, use ™ in marketing optionally: EcoSystems IDE™.
+Until registered, use ™ in marketing optionally: Altus IDE™.
 
 ---
 
@@ -105,14 +105,14 @@ Until registered, use ™ in marketing optionally: EcoSystems IDE™.
 
 | Location | Content |
 |----------|---------|
-| Window title | `EcoSystems IDE` |
+| Window title | `Altus IDE` |
 | About dialog | EcoSystems name, version, link to OSS notices |
 | Splash / welcome | EcoSystems logo (when available) |
-| Settings | "EcoSystems AI" section (not "Copilot" or "VS Code AI") |
+| Settings | "Altus AI" section (not "Copilot" or "VS Code AI") |
 
 ### About dialog must include
 
-- EcoSystems IDE version
+- Altus IDE version
 - Code-OSS base version / commit (optional)
 - Link to open source licenses
 - Independence disclaimer (short form)
@@ -140,7 +140,7 @@ Until registered, use ™ in marketing optionally: EcoSystems IDE™.
 
 Phase 3 — when referencing VS Code marketplace:
 
-> Extensions published for Visual Studio Code may work in EcoSystems IDE. EcoSystems is not affiliated with the Visual Studio Code marketplace or Microsoft.
+> Extensions published for Visual Studio Code may work in Altus IDE. EcoSystems is not affiliated with the Visual Studio Code marketplace or Microsoft.
 
 ---
 
@@ -148,7 +148,7 @@ Phase 3 — when referencing VS Code marketplace:
 
 | Use | Avoid |
 |-----|-------|
-| EcoSystems AI | GitHub Copilot (we are not Copilot) |
+| Altus AI | GitHub Copilot (we are not Copilot) |
 | Inline completion | "Copilot-style" in product UI (OK in docs only) |
 | Chat | Claude/GPT as **provider names** in settings only |
 
@@ -159,11 +159,11 @@ Phase 3 — when referencing VS Code marketplace:
 Before any public release:
 
 - [ ] App icon is original (not VS Code blue icon)
-- [ ] Product name is "EcoSystems IDE" everywhere in UI
+- [ ] Product name is "Altus IDE" everywhere in UI
 - [ ] About dialog has OSS link + independence note
 - [ ] Website/README has disclaimer
 - [ ] No Microsoft logos in repo `resources/`
-- [ ] `product.json` uses EcoSystems identifiers
+- [ ] `product.json` uses Altus IDEntifiers
 
 Gate: [sign-off.md](../program/sign-off.md) A19.
 

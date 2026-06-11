@@ -1,6 +1,6 @@
 # Prompt Data Policy
 
-What data EcoSystems IDE **collects, processes, stores, and transmits** when AI features are used.
+What data Altus IDE **collects, processes, stores, and transmits** when AI features are used.
 
 **Audience:** Users, security reviewers, legal  
 **Phase:** 0 (updated each phase)  
@@ -117,7 +117,7 @@ No analytics SDK in Phase 0.
 
 ## 8. Prohibited Data in Prompts (Policy)
 
-EcoSystems IDE **must not intentionally add** to prompts:
+Altus IDE **must not intentionally add** to prompts:
 
 - Raw API keys or keychain contents
 - Contents of known credential files (Phase 1: enforce via scanner)

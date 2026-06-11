@@ -1,8 +1,8 @@
 # Supported Models Matrix — Phase 0
 
-Models available in EcoSystems IDE Phase 0 via **inbuilt AI** (EcoSystems Gateway + user session/license).
+Models available in Altus IDE Phase 0 via **inbuilt AI** (Altus AI Gateway + user session/license).
 
-**Provider:** EcoSystems AI Gateway ([ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway))  
+**Provider:** Altus AI Gateway ([ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway))  
 **Last updated:** 2026-05-31
 
 ---
@@ -14,7 +14,7 @@ Models available in EcoSystems IDE Phase 0 via **inbuilt AI** (EcoSystems Gatewa
 | Cloud chat | ✅ | Streaming via gateway |
 | Inline completion | ✅ | Via gateway |
 | User BYOK / paste API key | ❌ | Not offered (consumer) |
-| Bundled / included access | ✅ | By EcoSystems plan tier |
+| Bundled / included access | ✅ | By Altus AI plan tier |
 | Local (Ollama) | ❌ | Phase 2 (via gateway route) |
 | Anthropic (direct in IDE) | ❌ | Phase 1 (gateway upstream only) |
 
@@ -24,11 +24,11 @@ Models available in EcoSystems IDE Phase 0 via **inbuilt AI** (EcoSystems Gatewa
 
 Users do **not** buy API keys from OpenAI. They:
 
-1. **Sign in** to EcoSystems (or activate a license).
+1. **Sign in** to Altus AI (or activate a license).
 2. Use models **included in their plan** (free / pro / team).
-3. Pick a model in **Settings → EcoSystems AI** from the gateway catalog.
+3. Pick a model in **Settings → Altus AI** from the gateway catalog.
 
-EcoSystems pays upstream providers and meters usage on the gateway.
+Altus AI pays upstream providers and meters usage on the gateway.
 
 ---
 
@@ -94,11 +94,11 @@ Settings dropdown populated from **gateway model list** (filtered by tier).
 | Handling | Behavior |
 |----------|----------|
 | HTTP 429 | Retry twice; show "rate limited" |
-| HTTP 401 | Show "Sign in to EcoSystems" |
+| HTTP 401 | Show "Sign in to Altus AI" |
 | HTTP 402 / quota | Show upgrade / wait message |
 | Context too long | Truncate per [ai-context-pipeline.md](../architecture/ai-context-pipeline.md) |
 
-EcoSystems bills the user (subscription/credits). Upstream provider billing is internal to the gateway.
+Altus AI bills the user (subscription/credits). Upstream provider billing is internal to the gateway.
 
 ---
 
@@ -130,7 +130,7 @@ IDE never stores OpenAI `sk-...` keys even in dev.
 
 | Phase | Addition |
 |-------|----------|
-| 1 | Anthropic via gateway (`claude-3-5-sonnet`, etc.) |
+| 1 | Anthropic via gateway (`claude-opus-4-8`, `claude-sonnet-4-6`, `claude-haiku-4-5-20251001`) |
 | 2 | Local models via gateway Ollama route |
 | 3+ | Enterprise BYOK tier (optional; not default) |
 

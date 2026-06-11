@@ -1,6 +1,6 @@
 # PRD v1 — Phase 0 (Foundation)
 
-**Product:** EcoSystems IDE  
+**Product:** Altus IDE  
 **Version:** 1.0  
 **Phase:** 0 — Foundation  
 **Status:** Draft for sign-off  
@@ -57,7 +57,7 @@ Developers want VS Code’s reliability with AI integrated into the editing flow
 | ID | Feature | Acceptance criteria |
 |----|---------|---------------------|
 | F-001 | Code-OSS fork | Repo contains fork; builds locally per `docs/dev/setup.md` |
-| F-002 | Product identity | App name **EcoSystems IDE**; custom icon; about dialog updated |
+| F-002 | Product identity | App name **Altus IDE**; custom icon; about dialog updated |
 | F-003 | Version scheme | Semver `0.1.x` for Phase 0 releases |
 
 ### 5.2 Settings & secrets

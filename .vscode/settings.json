@@ -171,4 +171,7 @@
 	"eslint.useFlatConfig": true,
 	"editor.occurrencesHighlightDelay": 0,
 	"typescript.experimental.expandableHover": true,
+	"ecosystems.ai.gateway.baseUrl": "http://localhost:8787/v1",
+	"ecosystems.ai.chat.model": "gpt-4o-mini",
+	"chat.experimental.offerSetup": false
 }

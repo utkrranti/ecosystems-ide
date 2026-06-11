@@ -6,7 +6,7 @@
 
 ## What “Like VS Code with AI” Means
 
-| Layer | VS Code baseline | EcoSystems IDE differentiation |
+| Layer | VS Code baseline | Altus IDE differentiation |
 |-------|------------------|--------------------------------|
 | Editor | Monaco, multi-cursor, LSP | Same UX bar; AI inline + selection actions |
 | Workbench | Explorer, search, SCM, terminal, debug | Same layout; AI panel as first-class citizen |

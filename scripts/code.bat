@@ -1,15 +1,19 @@
 @echo off
 setlocal
 
-title VSCode Dev
+title Altus IDE Dev
 
 pushd %~dp0\..
 
 :: Get electron, compile, built-in extensions
 if "%VSCODE_SKIP_PRELAUNCH%"=="" node build/lib/preLaunch.js
 
-for /f "delims=" %%a in ('node -p "require('./product.json').nameShort + '.exe'"') do set NAMESHORT=%%a
-set CODE=".build\electron\%NAMESHORT%"
+for /f "usebackq delims=" %%a in (`node "%~dp0resolve-electron-exe.js"`) do set "CODE_EXE=%%a"
+if not defined CODE_EXE (
+	echo Failed to resolve Electron executable. Run: npm run electron
+	popd
+	exit /b 1
+)
 
 :: Manage built-in extensions
 if "%~1"=="--builtin" goto builtin
@@ -28,13 +32,12 @@ for %%A in (%*) do (
 	)
 )
 
-:: Launch Code
-
-%CODE% . %DISABLE_TEST_EXTENSION% %*
+:: Launch IDE
+call "%CODE_EXE%" . %DISABLE_TEST_EXTENSION% %*
 goto end
 
 :builtin
-%CODE% build/builtin
+call "%CODE_EXE%" build/builtin
 
 :end
 

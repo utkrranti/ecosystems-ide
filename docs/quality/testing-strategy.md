@@ -1,6 +1,6 @@
 # Testing Strategy
 
-How to test **EcoSystems IDE** code, workbench UI, and **in-app webviews** (chat panel runs inside Electron’s embedded browser).
+How to test **Altus IDE** code, workbench UI, and **in-app webviews** (chat panel runs inside Electron’s embedded browser).
 
 **Phase:** 0  
 **Last updated:** 2026-05-30
@@ -249,7 +249,7 @@ test('chat webview sends message and shows response', async () => {
   const { app, window } = await launchEcoSystemsIDE();
 
   // Open AI sidebar
-  await window.click('[aria-label="EcoSystems AI"]'); // activity bar
+  await window.click('[aria-label="Altus AI"]'); // activity bar
 
   // Webviews often appear as iframe or separate frame — use frame locator
   const chatFrame = window.frameLocator('iframe.webview');

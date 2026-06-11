@@ -1,6 +1,6 @@
 # Repository Layout & Module Boundaries
 
-Target structure for the EcoSystems IDE monorepo after Code-OSS fork integration.
+Target structure for the Altus IDE monorepo after Code-OSS fork integration.
 
 **Last updated:** 2026-05-30
 
@@ -136,8 +136,8 @@ Key fields to patch from Code-OSS defaults:
 
 ```json
 {
-  "nameShort": "EcoSystems IDE",
-  "nameLong": "EcoSystems IDE",
+  "nameShort": "Altus IDE",
+  "nameLong": "Altus IDE",
   "applicationName": "ecosystems-ide",
   "dataFolderName": ".ecosystems-ide",
   "win32MutexName": "ecosystemside",

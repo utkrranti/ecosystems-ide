@@ -1,6 +1,6 @@
 # Solution Architecture
 
-System design for EcoSystems IDE: how components connect, how AI fits in, and how the repository is organized.
+System design for Altus IDE: how components connect, how AI fits in, and how the repository is organized.
 
 ---
 
@@ -150,7 +150,7 @@ ecosystems-ide/
 ├── scripts/                     # Build, fork sync, release
 ├── src/
 │   vs/                          # Code-OSS core (upstream — minimize direct edits)
-│   │   platform/ecosystems/     # ★ EcoSystems AI platform services
+│   │   platform/ecosystems/     # ★ Altus AI platform services
 │   │   │   ai/
 │   │   │   │   ├── context/
 │   │   │   │   ├── router/

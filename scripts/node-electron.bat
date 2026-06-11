@@ -5,10 +5,9 @@ set ELECTRON_RUN_AS_NODE=1
 
 pushd %~dp0\..
 
-for /f "delims=" %%a in ('node -p "require('./product.json').nameShort + '.exe'"') do set NAMESHORT=%%a
-set CODE=".build\electron\%NAMESHORT%"
+for /f "usebackq delims=" %%a in (`node "%~dp0resolve-electron-exe.js"`) do set "CODE_EXE=%%a"
 
-%CODE% %*
+call "%CODE_EXE%" %*
 
 popd
 

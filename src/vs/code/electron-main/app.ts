@@ -77,6 +77,8 @@ import { DarwinUpdateService } from '../../platform/update/electron-main/updateS
 import { LinuxUpdateService } from '../../platform/update/electron-main/updateService.linux.js';
 import { SnapUpdateService } from '../../platform/update/electron-main/updateService.snap.js';
 import { Win32UpdateService } from '../../platform/update/electron-main/updateService.win32.js';
+import { ECOSYSTEMS_OAUTH_LOOPBACK_CHANNEL } from '../../platform/ecosystems/common/ecosystemsOAuthLoopbackIpc.js';
+import { EcosystemsOAuthLoopbackChannel } from '../../platform/ecosystems/electron-main/ecosystemsOAuthLoopbackChannel.js';
 import { IOpenURLOptions, IURLService } from '../../platform/url/common/url.js';
 import { URLHandlerChannelClient, URLHandlerRouter } from '../../platform/url/common/urlIpc.js';
 import { NativeURLService } from '../../platform/url/common/urlService.js';
@@ -1194,6 +1196,9 @@ export class CodeApplication extends Disposable {
 		// URL handling
 		const urlChannel = ProxyChannel.fromService(accessor.get(IURLService), disposables);
 		mainProcessElectronServer.registerChannel('url', urlChannel);
+
+		// EcoSystems AI OAuth loopback (Node http server for browser sign-in callbacks)
+		mainProcessElectronServer.registerChannel(ECOSYSTEMS_OAUTH_LOOPBACK_CHANNEL, new EcosystemsOAuthLoopbackChannel());
 
 		// Webview Manager
 		const webviewChannel = ProxyChannel.fromService(accessor.get(IWebviewManagerService), disposables);

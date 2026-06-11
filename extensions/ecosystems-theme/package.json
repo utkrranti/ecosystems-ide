@@ -1,0 +1,22 @@
+{
+  "name": "ecosystems-theme",
+  "displayName": "Altus Theme",
+  "description": "Default Altus IDE color theme (black + purple/cyan accents).",
+  "version": "1.0.0",
+  "publisher": "ecosystems",
+  "license": "MIT",
+  "engines": {
+    "vscode": "*"
+  },
+  "categories": ["Themes"],
+  "contributes": {
+    "themes": [
+      {
+        "id": "Altus Dark",
+        "label": "Altus Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/ecosystems-dark-color-theme.json"
+      }
+    ]
+  }
+}

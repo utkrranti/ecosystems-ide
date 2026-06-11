@@ -1,10 +1,10 @@
 # Settings & Configuration Schema
 
-EcoSystems IDE configuration keys for AI and platform features.
+Altus IDE configuration keys for AI and platform features.
 
 **Namespace prefix:** `ecosystems.*` (avoids collision with VS Code defaults)  
 **Last updated:** 2026-05-31  
-**Auth:** Inbuilt via EcoSystems Gateway ([ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway)) — no user LLM API keys
+**Auth:** Inbuilt via Altus AI Gateway ([ADR-011](../05-architectural-decisions.md#adr-011-inbuilt-ai-via-ecosystems-gateway)) — no user LLM API keys
 
 ---
 
@@ -44,7 +44,7 @@ Phase 0: user settings for AI models and gateway URL; **session token** in keych
 {
   "enum": ["ecosystems", "none"],
   "enumDescriptions": [
-    "EcoSystems AI Gateway (inbuilt; sign in required)",
+    "Altus AI Gateway (inbuilt; sign in required)",
     "Disable cloud AI"
   ]
 }
@@ -70,7 +70,7 @@ See [secrets-and-keychain.md](../security/secrets-and-keychain.md).
 ```typescript
 configurationRegistry.registerConfiguration({
   id: 'ecosystemsAi',
-  title: 'EcoSystems AI',
+  title: 'Altus AI',
   properties: {
     'ecosystems.ai.enabled': {
       type: 'boolean',
@@ -82,7 +82,7 @@ configurationRegistry.registerConfiguration({
 });
 ```
 
-Settings UI section: **Settings → EcoSystems AI**
+Settings UI section: **Settings → Altus AI**
 
 ---
 

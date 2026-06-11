@@ -1,13 +1,40 @@
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) EcoSystems contributors. All rights reserved.
- *  Licensed under the MIT License.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+
+/* Override workbench body { user-select: none } for the entire chat pane */
+.monaco-workbench .pane-body.ecosystems-ai-chat {
+	user-select: text !important;
+	-webkit-user-select: text !important;
+}
+
+.monaco-workbench .pane-body.ecosystems-ai-chat button,
+.monaco-workbench .pane-body.ecosystems-ai-chat .composer-toolbar,
+.monaco-workbench .pane-body.ecosystems-ai-chat .composer-btn,
+.monaco-workbench .pane-body.ecosystems-ai-chat .msg-edit-btn,
+.monaco-workbench .pane-body.ecosystems-ai-chat .chat-queue-action,
+.monaco-workbench .pane-body.ecosystems-ai-chat .agent-files-action,
+.monaco-workbench .pane-body.ecosystems-ai-chat .agent-terminals-close,
+.monaco-workbench .pane-body.ecosystems-ai-chat .agent-file-row,
+.monaco-workbench .pane-body.ecosystems-ai-chat .agent-terminal-row,
+.monaco-workbench .pane-body.ecosystems-ai-chat .tool-open-terminal,
+.monaco-workbench .pane-body.ecosystems-ai-chat .sessions-list .session-list-item {
+	user-select: none !important;
+	-webkit-user-select: none !important;
+}
 
 .ecosystems-ai-chat {
 	height: 100%;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
 	color: var(--vscode-foreground);
 	font-family: var(--vscode-font-family);
 	font-size: var(--vscode-font-size);
+	background: #000000;
+	user-select: text;
+	-webkit-user-select: text;
 	--ecosystems-accent-1: #7c5cff;
 	--ecosystems-accent-2: #19c8ff;
 	--ecosystems-accent-grad: linear-gradient(135deg, var(--ecosystems-accent-1) 0%, var(--ecosystems-accent-2) 100%);
@@ -16,8 +43,223 @@
 .ecosystems-ai-chat .ecosystems-ai-body {
 	display: flex;
 	flex-direction: column;
+	flex: 1;
+	min-height: 0;
 	height: 100%;
 	box-sizing: border-box;
+}
+
+/* Sessions list + chat (resizable split) */
+.ecosystems-ai-chat .ecosystems-ai-main-split {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-main-split.sessions-hidden .ecosystems-ai-sessions-panel,
+.ecosystems-ai-chat .ecosystems-ai-main-split.sessions-hidden .ecosystems-ai-sessions-sash {
+	display: none;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-main {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-sash {
+	flex-shrink: 0;
+	height: 5px;
+	cursor: row-resize;
+	background: transparent;
+	position: relative;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-sash::after {
+	content: '';
+	position: absolute;
+	left: 12px;
+	right: 12px;
+	top: 2px;
+	height: 1px;
+	background: var(--vscode-widget-border, rgba(128, 128, 128, 0.35));
+	transition: background 0.12s ease, height 0.12s ease;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-sash:hover::after,
+.ecosystems-ai-chat .ecosystems-ai-sessions-sash:active::after {
+	height: 2px;
+	background: var(--ecosystems-accent-1, #7c5cff);
+}
+
+/* Chat sessions list */
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	min-height: 72px;
+	overflow: hidden;
+	border-bottom: none;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .sessions-panel-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 8px 10px 6px;
+	flex-shrink: 0;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .sessions-panel-title {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	opacity: 0.75;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-new {
+	padding: 4px 6px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-new:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .sessions-list {
+	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
+	padding: 0 6px 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .sessions-list-empty {
+	padding: 10px 8px;
+	opacity: 0.65;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-item:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-item.active {
+	background: var(--vscode-list-activeSelectionBackground);
+	border-color: var(--vscode-focusBorder, #7c5cff);
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-title {
+	font-weight: 500;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-meta {
+	font-size: 11px;
+	opacity: 0.7;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-sessions-panel .session-list-check {
+	flex-shrink: 0;
+	color: var(--ecosystems-accent-2, #19c8ff);
+}
+
+.ecosystems-ai-chat .composer-btn.sessions-toggle.active {
+	color: var(--ecosystems-accent-2, #19c8ff);
+}
+
+/* Chat toolbar: sessions list, title, new chat -- always visible */
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 8px;
+	border-bottom: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+	min-height: 32px;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar .chat-session-back {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--ecosystems-accent-2, #19c8ff);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar .chat-session-back:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar .chat-session-active-title {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 12px;
+	font-weight: 500;
+	opacity: 0.85;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar .chat-session-new {
+	flex-shrink: 0;
+	padding: 4px 6px;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-chat-session-bar .chat-session-new:hover {
+	background: var(--vscode-toolbar-hoverBackground);
 }
 
 /* Signed-out hero */
@@ -139,6 +381,126 @@
 	transition: border-color 0.12s ease, background 0.12s ease;
 }
 
+/* Assistant replies: flat prose (no card) */
+.ecosystems-ai-chat .msg.assistant .bubble.bubble-prose {
+	padding: 2px 0 6px;
+	background: transparent;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble.bubble-prose.bubble-loading {
+	min-height: 28px;
+	padding: 4px 0;
+}
+
+/* Assistant markdown + streaming typewriter */
+.ecosystems-ai-chat .msg.assistant .bubble.bubble-prose.bubble-streaming,
+.ecosystems-ai-chat .msg.assistant .bubble.bubble-prose:has(.bubble-markdown) {
+	white-space: normal;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-stream-body {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .ecosystems-stream-token {
+	display: inline;
+	animation: ecosystems-stream-fade-in 0.38s ease-out forwards;
+	opacity: 0;
+}
+
+@keyframes ecosystems-stream-fade-in {
+	from {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown {
+	font-size: inherit;
+	line-height: 1.55;
+	animation: ecosystems-markdown-in 0.32s ease-out;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.bubble-markdown-in {
+	animation: ecosystems-markdown-in 0.32s ease-out;
+}
+
+@keyframes ecosystems-markdown-in {
+	from {
+		opacity: 0.35;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h1,
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h2,
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h3 {
+	margin: 0.65em 0 0.35em;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h1 { font-size: 1.25em; }
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h2 { font-size: 1.12em; }
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown h3 { font-size: 1.05em; }
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown p {
+	margin: 0.4em 0;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown ul,
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown ol {
+	margin: 0.35em 0;
+	padding-left: 1.35em;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown li {
+	margin: 0.2em 0;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown code {
+	font-family: var(--vscode-editor-font-family);
+	font-size: 0.92em;
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+	background: var(--vscode-textCodeBlock-background);
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown pre {
+	margin: 0.5em 0;
+	padding: 8px 10px;
+	border-radius: 6px;
+	overflow-x: auto;
+	background: var(--vscode-textCodeBlock-background);
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown pre code {
+	padding: 0;
+	background: transparent;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown strong {
+	font-weight: 600;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown a {
+	color: #a78bff;
+}
+
+.ecosystems-ai-chat .msg.assistant .bubble .bubble-markdown.rendered-markdown a:hover {
+	color: var(--ecosystems-accent-2);
+}
+
 .ecosystems-ai-chat .msg.user .bubble {
 	background: var(--vscode-input-background);
 }
@@ -253,13 +615,412 @@
 .ecosystems-ai-chat .msg.tool .bubble.tool {
 	font-family: var(--vscode-editor-font-family, monospace);
 	font-size: 12px;
-	padding: 5px 9px;
-	background: var(--vscode-textCodeBlock-background, var(--vscode-editorWidget-background));
-	color: var(--vscode-descriptionForeground);
+	padding: 8px 11px;
+	border-radius: 8px;
+	background: var(--vscode-editorWidget-background);
+	border: 1px solid var(--vscode-editorWidget-border, rgba(128, 128, 128, 0.35));
+	color: var(--vscode-foreground);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .ecosystems-ai-chat .msg.tool .bubble.tool.ecosystems-ai-tool-error {
 	color: var(--vscode-errorForeground);
+}
+
+/* Chat message queue (while agent is busy) */
+.ecosystems-ai-chat .chat-queue-panel {
+	margin: 0 8px 6px;
+	padding: 6px 8px;
+	border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.35));
+	border-radius: 6px;
+	background: var(--vscode-editorWidget-background);
+	flex-shrink: 0;
+}
+
+.ecosystems-ai-chat .chat-queue-header {
+	margin-bottom: 4px;
+}
+
+.ecosystems-ai-chat .chat-queue-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	border: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	font-weight: 500;
+	padding: 2px 4px;
+}
+
+.ecosystems-ai-chat .chat-queue-toggle:hover {
+	color: var(--vscode-textLink-foreground);
+}
+
+.ecosystems-ai-chat .chat-queue-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ecosystems-ai-chat .chat-queue-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 4px 2px;
+	border-radius: 4px;
+	position: relative;
+}
+
+.ecosystems-ai-chat .chat-queue-item:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.ecosystems-ai-chat .chat-queue-item:hover .chat-queue-actions {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.ecosystems-ai-chat .chat-queue-dot {
+	flex-shrink: 0;
+	margin-top: 3px;
+	opacity: 0.55;
+	font-size: 10px;
+}
+
+.ecosystems-ai-chat .chat-queue-body {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ecosystems-ai-chat .chat-queue-text {
+	font-size: 12px;
+	line-height: 1.4;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	word-break: break-word;
+}
+
+.ecosystems-ai-chat .chat-queue-attachments {
+	font-size: 11px;
+	opacity: 0.7;
+}
+
+.ecosystems-ai-chat .chat-queue-actions {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	flex-shrink: 0;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.12s ease;
+}
+
+.ecosystems-ai-chat .chat-queue-item-editing .chat-queue-actions {
+	display: none;
+}
+
+.ecosystems-ai-chat .chat-queue-action {
+	border: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	padding: 2px 4px;
+	border-radius: 4px;
+	line-height: 1;
+}
+
+.ecosystems-ai-chat .chat-queue-action:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-textLink-foreground);
+}
+
+.ecosystems-ai-chat .chat-queue-editor {
+	width: 100%;
+	box-sizing: border-box;
+	resize: vertical;
+	min-height: 48px;
+	padding: 6px 8px;
+	border: 1px solid var(--vscode-input-border, rgba(128, 128, 128, 0.4));
+	border-radius: 4px;
+	background: var(--vscode-input-background);
+	color: var(--vscode-input-foreground);
+	font: inherit;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.ecosystems-ai-chat .chat-queue-editor-actions {
+	display: flex;
+	gap: 6px;
+	margin-top: 4px;
+}
+
+.ecosystems-ai-chat .chat-queue-editor-btn {
+	border: 1px solid var(--vscode-button-border, transparent);
+	background: var(--vscode-button-secondaryBackground);
+	color: var(--vscode-button-secondaryForeground);
+	padding: 2px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 11px;
+}
+
+.ecosystems-ai-chat .chat-queue-editor-btn.primary {
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+}
+
+/* Agent activity panel: files + terminal commands */
+.ecosystems-ai-chat .agent-activity-panel {
+	margin: 0 8px 6px;
+	padding: 6px 8px;
+	border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.35));
+	border-radius: 6px;
+	background: var(--vscode-editorWidget-background);
+}
+
+.ecosystems-ai-chat .agent-files-section + .agent-terminals-section {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.25));
+}
+
+.ecosystems-ai-chat .agent-files-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.ecosystems-ai-chat .agent-files-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	border: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	padding: 2px 4px;
+}
+
+.ecosystems-ai-chat .agent-files-toggle:hover {
+	color: var(--vscode-textLink-foreground);
+}
+
+.ecosystems-ai-chat .agent-files-actions {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+.ecosystems-ai-chat .agent-files-action {
+	border: 1px solid var(--vscode-widget-border, rgba(128, 128, 128, 0.35));
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	padding: 3px 10px;
+	border-radius: 4px;
+	line-height: 1.2;
+}
+
+.ecosystems-ai-chat .agent-files-action:hover:not(:disabled) {
+	background: var(--vscode-toolbar-hoverBackground);
+}
+
+.ecosystems-ai-chat .agent-files-action:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.ecosystems-ai-chat .agent-files-action.keep {
+	border-color: rgba(124, 92, 255, 0.55);
+	color: #c4b5fd;
+}
+
+.ecosystems-ai-chat .agent-files-action.keep:hover:not(:disabled) {
+	background: rgba(124, 92, 255, 0.18);
+}
+
+.ecosystems-ai-chat .agent-files-action.undo:hover:not(:disabled) {
+	border-color: rgba(248, 81, 73, 0.45);
+	color: #f85149;
+}
+
+.ecosystems-ai-chat .agent-files-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.ecosystems-ai-chat .agent-file-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	padding: 4px 6px;
+}
+
+.ecosystems-ai-chat .agent-file-row:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.ecosystems-ai-chat .agent-file-lang {
+	flex-shrink: 0;
+	min-width: 22px;
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--vscode-descriptionForeground);
+}
+
+.ecosystems-ai-chat .agent-file-name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: var(--vscode-editor-font-family, monospace);
+}
+
+.ecosystems-ai-chat .agent-file-stats {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+	font-family: var(--vscode-editor-font-family, monospace);
+	font-size: 11px;
+}
+
+.ecosystems-ai-chat .agent-file-change-add {
+	color: var(--vscode-gitDecoration-addedResourceForeground, #73c991);
+}
+
+.ecosystems-ai-chat .agent-file-change-del {
+	color: var(--vscode-gitDecoration-deletedResourceForeground, #f14c4c);
+}
+
+/* Terminal commands in activity panel */
+.ecosystems-ai-chat .agent-terminals-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 4px;
+}
+
+.ecosystems-ai-chat .agent-terminals-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	border: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	padding: 2px 4px;
+}
+
+.ecosystems-ai-chat .agent-terminals-toggle:hover {
+	color: var(--vscode-textLink-foreground);
+}
+
+.ecosystems-ai-chat .agent-terminals-actions {
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.ecosystems-ai-chat .agent-terminals-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	padding: 2px 6px;
+	border-radius: 4px;
+	line-height: 1;
+	opacity: 0.85;
+}
+
+.ecosystems-ai-chat .agent-terminals-close:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	opacity: 1;
+}
+
+.ecosystems-ai-chat .agent-terminals-close .codicon {
+	font-size: 14px;
+}
+
+.ecosystems-ai-chat .agent-terminal-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	text-align: left;
+	border: none;
+	border-radius: 4px;
+	background: transparent;
+	color: var(--vscode-foreground);
+	cursor: pointer;
+	font-family: var(--vscode-font-family);
+	font-size: 12px;
+	padding: 4px 6px;
+}
+
+.ecosystems-ai-chat .agent-terminal-row:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.ecosystems-ai-chat .agent-terminal-row .codicon-terminal {
+	flex-shrink: 0;
+	color: var(--vscode-terminal-ansiGreen, #4ec9b0);
+}
+
+.ecosystems-ai-chat .agent-terminal-command {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: var(--vscode-editor-font-family, monospace);
+}
+
+.ecosystems-ai-chat .agent-terminal-status {
+	flex-shrink: 0;
+	font-size: 11px;
+	color: var(--vscode-descriptionForeground);
+}
+
+.ecosystems-ai-chat .agent-terminal-status.failed {
+	color: var(--vscode-errorForeground);
+}
+
+.ecosystems-ai-chat .agent-terminal-open {
+	flex-shrink: 0;
+	font-size: 11px;
+	color: var(--vscode-textLink-foreground);
 }
 
 /* Open-terminal affordance on run_in_terminal tool bubbles */
@@ -289,6 +1050,27 @@
 	font-size: 12px;
 }
 
+/* Compacted history banner (full messages still visible below) */
+.ecosystems-ai-chat .msg.compaction-banner {
+	opacity: 0.9;
+	margin-bottom: 8px;
+}
+
+.ecosystems-ai-chat .msg.compaction-banner .codicon {
+	color: var(--ecosystems-accent-2, var(--vscode-textLink-foreground));
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+.ecosystems-ai-chat .bubble.compaction {
+	font-size: 12px;
+	color: var(--vscode-descriptionForeground);
+	background: var(--vscode-editorWidget-background);
+	border: 1px dashed var(--vscode-editorWidget-border, rgba(128, 128, 128, 0.35));
+	border-radius: 8px;
+	padding: 8px 10px;
+}
+
 /* Thinking / planning row shown while the agent is deciding its next tool calls */
 .ecosystems-ai-chat .msg.thinking {
 	opacity: 0.85;
@@ -304,13 +1086,14 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	padding: 4px 10px;
-	background: transparent;
+	padding: 7px 11px;
+	background: var(--vscode-editorWidget-background);
 	color: var(--vscode-descriptionForeground);
 	font-style: italic;
 	font-size: 12px;
-	border: 1px dashed var(--vscode-input-border, transparent);
-	border-radius: 999px;
+	border: 1px solid var(--vscode-editorWidget-border, rgba(128, 128, 128, 0.35));
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .ecosystems-ai-chat .bubble.thinking .thinking-dots {
@@ -324,8 +1107,8 @@
 }
 
 /* Shimmer loader for awaiting assistant tokens */
-.ecosystems-ai-chat .bubble.bubble-loading {
-	min-height: 38px;
+.ecosystems-ai-chat .msg.assistant .bubble.bubble-prose.bubble-loading {
+	min-height: 28px;
 }
 
 .ecosystems-ai-chat .shimmer {
@@ -376,6 +1159,8 @@
 }
 
 .ecosystems-ai-chat .ecosystems-ai-composer textarea {
+	user-select: text;
+	-webkit-user-select: text;
 	width: 100%;
 	resize: none;
 	border: none;
@@ -495,6 +1280,62 @@
 	vertical-align: -2px;
 }
 
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-meter {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.92em;
+	opacity: 0.9;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-meter-bar {
+	display: inline-block;
+	width: 52px;
+	height: 4px;
+	border-radius: 2px;
+	background: rgba(128, 128, 128, 0.35);
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-meter-fill {
+	display: block;
+	height: 100%;
+	border-radius: 2px;
+	background: var(--ecosystems-accent-grad, linear-gradient(135deg, #7c5cff, #19c8ff));
+	transition: width 0.2s ease;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-meter-fill.high {
+	background: #c83b3b;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-meter-fill.compacting {
+	animation: ecosystems-ai-meter-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ecosystems-ai-meter-pulse {
+	0%, 100% { opacity: 0.65; }
+	50% { opacity: 1; }
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-compacting {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.92em;
+	opacity: 0.85;
+}
+
+.ecosystems-ai-chat .ecosystems-ai-statusbar .context-compacting .codicon-loading {
+	animation: ecosystems-ai-spin 1s linear infinite;
+}
+
+@keyframes ecosystems-ai-spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
 .ecosystems-ai-chat .typing-dot {
 	display: inline-block;
 	width: 4px;
@@ -542,6 +1383,19 @@ font-size: 11px;
 opacity: 0.85;
 }
 
+.ecosystems-ai-chat .attachment-chip-image {
+padding-left: 2px;
+}
+
+.ecosystems-ai-chat .attachment-thumb {
+width: 22px;
+height: 22px;
+border-radius: 4px;
+background-size: cover;
+	background-position: center;
+	flex-shrink: 0;
+}
+
 .ecosystems-ai-chat .attachment-label {
 overflow: hidden;
 text-overflow: ellipsis;
@@ -679,6 +1533,19 @@ font-size: 11px;
 opacity: 0.85;
 }
 
+.ecosystems-ai-chat .attachment-chip-image {
+padding-left: 2px;
+}
+
+.ecosystems-ai-chat .attachment-thumb {
+width: 22px;
+height: 22px;
+border-radius: 4px;
+background-size: cover;
+	background-position: center;
+	flex-shrink: 0;
+}
+
 .ecosystems-ai-chat .attachment-label {
 overflow: hidden;
 text-overflow: ellipsis;
@@ -786,4 +1653,67 @@ background: color-mix(in srgb, var(--ecosystems-accent-2) 18%, transparent);
 
 .ecosystems-ai-chat .bubble-attachment .codicon {
 font-size: 11px;
+}
+
+/* Intelligence mode picker (anchored above toolbar) */
+.ecosystems-ai-chat .composer-model-popup {
+position: absolute;
+min-width: 240px;
+max-width: 300px;
+max-height: 280px;
+overflow-y: auto;
+background: var(--vscode-editorWidget-background, var(--vscode-menu-background));
+color: var(--vscode-menu-foreground, var(--vscode-foreground));
+border: 1px solid var(--vscode-editorWidget-border, var(--vscode-menu-border, transparent));
+border-radius: 8px;
+box-shadow: 0 8px 28px -8px rgba(0, 0, 0, 0.45);
+padding: 4px 0;
+z-index: 51;
+}
+
+.ecosystems-ai-chat .model-picker-item {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+padding: 6px 10px;
+cursor: pointer;
+}
+
+.ecosystems-ai-chat .model-picker-item:hover {
+background: var(--vscode-list-hoverBackground);
+}
+
+.ecosystems-ai-chat .model-picker-item.selected {
+background: color-mix(in srgb, var(--ecosystems-accent-1) 18%, transparent);
+}
+
+.ecosystems-ai-chat .model-picker-item .codicon-check {
+flex-shrink: 0;
+margin-top: 2px;
+font-size: 12px;
+opacity: 0.9;
+}
+
+.ecosystems-ai-chat .model-picker-item:not(.selected) .codicon-check {
+display: none;
+}
+
+.ecosystems-ai-chat .model-picker-body {
+display: flex;
+flex-direction: column;
+gap: 2px;
+min-width: 0;
+}
+
+.ecosystems-ai-chat .model-picker-name {
+font-weight: 500;
+font-size: 12px;
+line-height: 1.3;
+}
+
+.ecosystems-ai-chat .model-picker-hint {
+font-size: 11px;
+line-height: 1.35;
+opacity: 0.72;
+white-space: normal;
 }

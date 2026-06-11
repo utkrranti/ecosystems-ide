@@ -1,6 +1,6 @@
 # Documentation Reading Sequence
 
-Recommended order for reading EcoSystems IDE docs **before and during Phase 0 development**.
+Recommended order for reading Altus IDE docs **before and during Phase 0 development**.
 
 **Time:** ~2–3 hours for the full engineer path; ~45 minutes for the essentials.
 

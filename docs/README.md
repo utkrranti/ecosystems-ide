@@ -1,4 +1,4 @@
-# EcoSystems IDE — Documentation
+# Altus IDE — Documentation
 
 Planning and architecture for a VS Code–class desktop editor with native AI.
 

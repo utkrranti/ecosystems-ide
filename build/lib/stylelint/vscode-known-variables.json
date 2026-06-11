@@ -349,6 +349,8 @@
 		"--vscode-extensionIcon-verifiedForeground",
 		"--vscode-focusBorder",
 		"--vscode-foreground",
+		"--vscode-gitDecoration-addedResourceForeground",
+		"--vscode-gitDecoration-deletedResourceForeground",
 		"--vscode-icon-foreground",
 		"--vscode-inlineChat-background",
 		"--vscode-inlineChat-border",
@@ -911,6 +913,12 @@
 		"--zoom-factor",
 		"--test-bar-width",
 		"--widget-color",
-		"--text-link-decoration"
+		"--text-link-decoration",
+		"--ecosystems-accent-1",
+		"--ecosystems-accent-2",
+		"--ecosystems-accent-grad",
+		"--vscode-font-family",
+		"--vscode-font-size",
+		"--vscode-editor-font-family"
 	]
 }

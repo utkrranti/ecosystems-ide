@@ -41,7 +41,7 @@ We need a VS Code–class IDE quickly with extension compatibility, LSP, debug, 
 
 ### Decision
 
-Fork **Code-OSS** (MIT) as the application base. Inject EcoSystems AI as first-party services under `src/vs/platform/ecosystems/ai/` and register UI via `src/vs/workbench/contrib/ecosystems/`.
+Fork **Code-OSS** (MIT) as the application base. Inject Altus AI as first-party services under `src/vs/platform/ecosystems/ai/` and register UI via `src/vs/workbench/contrib/ecosystems/`.
 
 ### Consequences
 
@@ -213,27 +213,27 @@ Default provider was **OpenAI-compatible API** with user **bring-your-own-key**.
 
 ### Consequences
 
-Superseded — product direction is **inbuilt AI** via EcoSystems Gateway (ADR-011). BYOK is not offered to end users in Phase 0+.
+Superseded — product direction is **inbuilt AI** via Altus AI Gateway (ADR-011). BYOK is not offered to end users in Phase 0+.
 
 ---
 
-## ADR-011: Inbuilt AI via EcoSystems Gateway
+## ADR-011: Inbuilt AI via Altus AI Gateway
 
 **Status:** Accepted  
 **Date:** 2026-05-31  
 
 ### Context
 
-EcoSystems IDE must ship **built-in AI** like a product (not a thin client where users paste provider API keys). Users sign in / hold a license; EcoSystems operates upstream model access, billing, and quotas.
+Altus IDE must ship **built-in AI** like a product (not a thin client where users paste provider API keys). Users sign in / hold a license; EcoSystems operates upstream model access, billing, and quotas.
 
 ADR-009 (BYOK) was rejected for the consumer product.
 
 ### Decision
 
-All cloud AI from the desktop IDE flows through the **EcoSystems AI Gateway**:
+All cloud AI from the desktop IDE flows through the **Altus AI Gateway**:
 
 ```
-IDE → Model Router → EcoSystems AI Gateway (user session / license)
+IDE → Model Router → Altus AI Gateway (user session / license)
                               ↓
                     OpenAI / Anthropic / etc. (EcoSystems keys — server-side only)
 ```
@@ -250,7 +250,7 @@ IDE → Model Router → EcoSystems AI Gateway (user session / license)
 ### Consequences
 
 **Positive:** Unified product UX; EcoSystems controls cost, abuse, and model policy; simpler user onboarding.  
-**Negative:** Requires gateway + accounts/billing before production AI; EcoSystems pays upstream providers.  
+**Negative:** Requires gateway + accounts/billing before production AI; Altus AI pays upstream providers.  
 **Neutral:** Model router abstraction unchanged; only the default provider and auth model change. Enterprise BYOK may be revisited as a **separate tier** in Phase 3+, not the default.
 
 ---
@@ -262,7 +262,7 @@ IDE → Model Router → EcoSystems AI Gateway (user session / license)
 
 ### Context
 
-EcoSystems IDE could be split across multiple repositories (editor fork, AI platform, extensions, docs, cloud API) or kept in one monorepo. The product is a **desktop application** with in-process AI; cloud inference goes through the **EcoSystems AI Gateway** (ADR-011), which may live in-repo or as a deployable service under `services/` when implemented.
+Altus IDE could be split across multiple repositories (editor fork, AI platform, extensions, docs, cloud API) or kept in one monorepo. The product is a **desktop application** with in-process AI; cloud inference goes through the **Altus AI Gateway** (ADR-011), implemented in the sibling Go project `ide_apis/` (local dev via `scripts/run-all.ps1`, production at `https://chat.altuside.com/v1`).
 
 ### Decision
 
